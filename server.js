@@ -2,12 +2,11 @@
 const express = require('express');
 require('dotenv').config();
 process.env.NODE_ENV = 'production';
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const mysql = require('mysql2');
 const cors = require('cors');
 const session = require('express-session');
-
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -50,7 +49,6 @@ db.connect((err) => {
   }
   console.log('Свързано с MySQL базата данни');
 });
-const path = require('path');
 
 // Проверка дали има активна сесия
 app.get('/api/check-session', (req, res) => {
