@@ -81,11 +81,18 @@ app.listen(PORT, '0.0.0.0', () => {
 app.get('/api/check-username/:username', (req, res) => {
   const { username } = req.params;
   const query = 'SELECT * FROM users WHERE username = ?';
+
   db.query(query, [username], (err, results) => {
-    if (err) return res.status(500).json({ error: 'DB error' });
+    if (err) {
+      console.error("❌ Грешка в /check-username:", err); // ще излезе в Railway logs
+      return res.status(500).json({ error: 'DB error' });
+    }
+
+    console.log(`✅ Проверка на username '${username}', резултати:`, results.length);
     res.json({ exists: results.length > 0 });
   });
 });
+
 
 // Проверка за имейл
 app.get('/api/check-email/:email', (req, res) => {
