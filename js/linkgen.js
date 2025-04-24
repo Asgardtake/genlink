@@ -67,30 +67,24 @@ function generateShortUrl() {
 }
 window.generateShortUrl = generateShortUrl;
 
-document.addEventListener("DOMContentLoaded", function () {
-        // 🔽 Проверка за сесия
-    fetch('/api/check-session', {
-        credentials: 'include'
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.loggedIn) {
-            window.loggedInUsername = data.user.username;
-        } else {
-            window.loggedInUsername = null;
-        }
-    })
-    .catch(() => {
+document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        const res = await fetch('/api/check-session', {
+            credentials: 'include'
+        });
+        const data = await res.json();
+        window.loggedInUsername = data.loggedIn ? data.user.username : null;
+    } catch (e) {
         window.loggedInUsername = null;
-    });
+    }
+
+    // Тук започва всичко останало, СЛЕД като сесията е проверена:
     const genButton = document.querySelector(".gen-btn");
     const radioButtonGroup = document.querySelector(".radio-button-group");
     const pathLengthElement = document.getElementById("path-length");
     const longUrlInput = document.getElementById("longurl");
     const shortUrlContainer = document.querySelector(".short-url-container");
     const clearSelectionText = document.querySelector(".clear-selection");
-    window.hasGeneratedBefore = false;
-
     pathLengthElement.style.display = "none";
 
     function moveButtonForMobile() {
