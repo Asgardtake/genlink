@@ -68,6 +68,21 @@ function generateShortUrl() {
 window.generateShortUrl = generateShortUrl;
 
 document.addEventListener("DOMContentLoaded", function () {
+        // 🔽 Проверка за сесия
+    fetch('/api/check-session', {
+        credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.loggedIn) {
+            window.loggedInUsername = data.user.username;
+        } else {
+            window.loggedInUsername = null;
+        }
+    })
+    .catch(() => {
+        window.loggedInUsername = null;
+    });
     const genButton = document.querySelector(".gen-btn");
     const radioButtonGroup = document.querySelector(".radio-button-group");
     const pathLengthElement = document.getElementById("path-length");
