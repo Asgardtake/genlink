@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<title>Generate short url</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="team" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<!--<link rel="stylesheet" href="css/owl.theme.default.min.css">-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!--<link rel="stylesheet" href="css/font-awesome.min.css">--> 
+<!-- MAIN CSS -->
+<link rel="stylesheet" href="css/main.css">
+</head>
+<!-- LOGIN MODAL OVERLAY -->
+<div id="loginModalOverlay" class="modal-overlay"></div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+    <h2 class="modal-title">Вход</h2>
+
+    <form id="logForm" novalidate>
+      <input type="text" id="logUsername" class="form-control modal-input" placeholder="Потребителско име" required>
+      <input type="email" id="logEmail" class="form-control modal-input" placeholder="E-mail" required>
+      <input type="password" id="logPass" class="form-control modal-input" placeholder="Парола" required>
+      <a href="#" class="modal-link">Забравена парола?</a>
+      <button type="submit" class="action-btn modal-submit">Вход</button>
+      <p class="modal-footer-text">
+        Нямаш регистрация?
+        <a href="#" id="openRegisterFromLogin">Създай акаунт и се възползвай от всички функционалности още сега!</a>
+      </p>   
+    </form>
+  </div>
+</div>
+
+<!-- REGISTRATION MODAL OVERLAY -->
+<div id="registerModalOverlay" class="modal-overlay"></div>
+
+<!-- REGISTRATION MODAL -->
+<div id="registerModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span class="close-modal" onclick="closeRegisterModal()">&times;</span>
+    <h2 class="modal-title">Регистрация</h2>
+    
+    <form id="regForm" novalidate>
+      <input type="text" id="regUsername" class="form-control modal-input" placeholder="Потребителско име" required>
+      <input type="email" id="regEmail" class="form-control modal-input" placeholder="E-mail" required>
+      <input type="password" id="regPass" class="form-control modal-input" placeholder="Парола" required>
+      <input type="password" id="regRepeat" class="form-control modal-input" placeholder="Повтори парола" required>
+      <div class="checkbox-container">
+        <label><input type="checkbox" id="termsCheckbox" name="terms">Съгласие с нашите условия за използване и поверителност.</label>
+      </div>
+      <button type="submit" class="action-btn modal-submit">Регистрация</button> 
+      <p class="modal-footer-text">
+        Имаш регистрация?
+        <a href="#" id="openLoginFromRegister">Влез в акаунта си и създай първия си кратък линк още сега!</a>
+      </p>
+    </form>
+  </div>
+</div>
+<body>
+<!-- PRE LOADER -->
+<section class="preloader">
+  <div class="spinner"> <span class="spinner-rotate"></span> </div>
+</section>
+
+<!-- MENU -->
+<section class="navbar custom-navbar navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="icon icon-bar"></span> <span class="icon icon-bar"></span> <span class="icon icon-bar"></span> </button>
+      
+      <!-- lOGO TEXT HERE --> 
+      <a href="#" class="navbar-brand">Genlink URL</a>
+      </div>
+    
+    <!-- MENU LINKS -->
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="profile.html" class="smoothScroll">Вход</a></li>
+        <li>
+          <button class="section-btn genrnav">Регистрация</button>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="#home" class="smoothScroll">LinkGen</a></li>
+        <li><a href="#feature" class="smoothScroll">Предимства</a></li>
+        <li><a href="#about" class="smoothScroll">За нас</a></li>
+        <li><a href="#pricing" class="smoothScroll">Пакети</a></li>
+        <li><a href="#contact" class="smoothScroll">Контакти</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE -->
+<section id="home" data-stellar-background-ratio="0.5">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-3 col-md-6 col-sm-12 gencnt">
+        <div class="home-info">
+          <h3>URL Shorter позволява създаването на персонални URL адреси.</h3>
+          <h1>Ние ви помагаме да управлявате и генерирате успешно вашите URL адреси</h1>
+          <p style="color:#fff; margin-bottom: 50px;">Поставете вашия дълъг линк по долу в полето за генериране. Ще Ви се отвори филтър с опции. Направете вашия избор от тях или може
+            да не ползвате филтъра и да генерирате вашия линк на случаен принцип.</p>
+        </div>
+        
+        <!-- Контейнер само за генериращия бутон и полето за дълъг URL -->
+        <div class="input-action-container generate-url-container">
+          <input type="text" id="longurl" class="form-control geninput longurl-input" placeholder="Въведете URL - мин.брой символи-10" required>
+          <button type="button" onclick="generateShortUrl()" class="action-btn gen-btn">Генерирай кратък URL</button>
+        </div>
+        
+        <!-- Нов контейнер за избора на дължина на генерирания URL, под полето за дълъг URL -->
+        <div class="input-action-container generate-url-container radio-button-group">
+          <label>
+            <input type="radio" name="urlLength" value="5">
+            До 5 символа</label>
+          <label>
+            <input type="radio" name="urlLength" value="10">
+            До 10 символа</label>
+          <label>
+            <input type="radio" name="urlLength" value="15">
+            До 15 символа</label>
+          <span class="clear-selection" onclick="clearSelection()"> <i class="fa fa-times-circle clear-icon"></i>Изчисти филтъра</span> </div>
+        
+        <!-- Контейнер за полето за кратък URL с бутони за запис -->
+        <div class="input-action-container short-url-wrapper">
+          <div class="short-url-container">
+            <input type="text" id="shorturl" class="form-control geninput" placeholder="Кратък URL ще се покаже тук" readonly>
+            <button id="saveButton" class="action-btn"><i class="fa fa-save btn-icon"></i></button>
+          </div>
+          <span id="path-length" class="url-length">0</span> <!-- Брояч на символите --> 
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE -->
+<section id="feature" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <div class="section-title">
+          <h1>Какво получавате?</h1>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-6">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="active"><a href="#tab01" aria-controls="tab01" role="tab" data-toggle="tab">Предимства</a></li>
+          <li><a href="#tab02" aria-controls="tab02" role="tab" data-toggle="tab">Гъвкавост</a></li>
+          <li><a href="#tab03" aria-controls="tab03" role="tab" data-toggle="tab">Support</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab01" role="tabpanel">
+            <div class="tab-pane-item">
+              <h2>Кратки URLs</h2>
+              <p>Използването на кратки URLs адресите не само намалява броя на използваните символи, но също така позволява измерването на ефективността на маркетинговите действия като предоставя допълнителна информация за вашите потребители.</p>
+            </div>
+            <div class="tab-pane-item">
+              <h2>Пълна информация</h2>
+              <p>Кратките URL адреси ви позволява да получите пълна информация за поведението на вашите потребители. Цялата тази информация ви позволява да опознаете клиента си по-добре, което от своя страна отваря нова възможност да таргетирате кампаниите си по-ефективно и да увеличите ангажираността на клиентите си.</p>
+            </div>
+          </div>
+          <div class="tab-pane" id="tab02" role="tabpanel">
+            <div class="tab-pane-item">
+              <h2>Интерфейс</h2>
+              <p>Нашата система е проектирана с внимание към потребителя, предоставяйки интуитивен интерфейс, който прави работата приятна и ефективна. Всеки аспект от интерфейса е създаден с цел да улесни взаимодействието и да подобри потребителското изживяване.</p>
+            </div>
+            <div class="tab-pane-item">
+              <h2>Модерните технологии</h2>
+              <p>Използваме най-модерните технологии в програмирането, което гарантира висока производителност, сигурност и мащабируемост. Използваме съвременни програмни езици и фреймуъркове, които осигуряват бързо развитие и гъвкавост на приложението. Технологичните иновации, интегрирани в нашите решения, позволяват оптимална работа, надеждност и безпроблемно потребителско изживяване.</p>
+            </div>
+          </div>
+          <div class="tab-pane" id="tab03" role="tabpanel">
+            <div class="tab-pane-item">
+              <h2>Бърза поддръжка</h2>
+              <p>Нашият екип е винаги на разположение, за да предостави незабавна помощ и разрешаване на всякакви въпроси или проблеми. Гарантираме кратко време за реакция и висока ефективност при решаването на технически запитвания.</p>
+            </div>
+            <div class="tab-pane-item">
+              <h2>Ефикасно обслужване</h2>
+              <p>Поставяме клиентите на първо място, като осигуряваме персонализирано и професионално обслужване. Нашите експерти използват най-добрите практики и инструменти, за да гарантират, че всяка заявка се обработва с внимание и грижа, водейки до бързи и ефективни резултати.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-6">
+        <div class="feature-image"> <img src="images/feature-mockup.png" class="img-responsive" alt="Thin Laptop"> </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-3 col-md-6 col-sm-12">
+        <div class="section-title">
+          <h1>Приложения на краткия URL</h1>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <div class="team-thumb"> <img src="images/team-image1.jpg" class="img-responsive" alt="Andrew Orange">
+          <div class="team-info team-thumb-up">
+            <h2>Маркетингови кампании</h2>            
+            <p>Кратките URL адреси са идеални за споделяне в социалните мрежи, където пространството е ограничено. Те позволяват лесно разпространение на линкове в рекламни публикации и проследяване на активността на потребителите.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <div class="team-thumb">
+          <div class="team-info team-thumb-down">
+            <h2>Проследяване на линкове</h2>            
+            <p>Генерирането на кратки URL адреси позволява интегрирането на проследяващи параметри, с които можете да анализирате поведението на аудиторията – от кои канали идват, колко често кликват и кои кампании са най-успешни.</p>
+          </div>
+          <img src="images/team-image2.jpg" class="img-responsive" alt="Catherine Soft"> </div>
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <div class="team-thumb"> <img src="images/team-image3.jpg" class="img-responsive" alt="Jack Wilson">
+          <div class="team-info team-thumb-up">
+            <h2>Лични съобщения и комуникации</h2>            
+            <p>Кратките линкове са удобни за използване в лична кореспонденция и в мобилни съобщения, където по-дългите линкове са трудни за четене и могат да бъдат отрязани. Те са лесни за копиране и споделяне, дори в ограничено пространство.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <div class="section-title">
+          <h1>Избери подходящ план за теб и твоя бизнес</h1>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="pricing-thumb">
+          <div class="pricing-title">
+            <h2>Стартов план</h2>
+          </div>
+          <div class="pricing-info">
+            <p>5 опита на случаен принцип </p>
+            <p>5 опита до 5 символа</p>
+            <p>2 опита до 10 символа</p>
+            <p>2 опита до 15 символа</p>            
+          </div>
+          <div class="pricing-bottom"> <span class="pricing-dollar">15лв./месец</span> <a href="#" class="section-btn pricing-btn">Избери</a> </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="pricing-thumb">
+          <div class="pricing-title">
+            <h2>Старт +</h2>
+          </div>
+          <div class="pricing-info">
+            <p>10 опита на случаен принцип </p>
+            <p>10 опита до 5 символа</p>
+            <p>10 опита до 10 символа</p>
+            <p>10 опита до 15 символа</p>
+          </div>
+          <div class="pricing-bottom"> <span class="pricing-dollar">25лв./месец</span> <a href="#" class="section-btn pricing-btn">Избери</a> </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="pricing-thumb">
+          <div class="pricing-title">
+            <h2>Про +</h2>
+          </div>
+          <div class="pricing-info">
+            <p>50 опита на случаен принцип </p>
+            <p>50 опита до 5 символа</p>
+            <p>50 опита до 10 символа</p>
+            <p>50 опита до 15 символа</p>
+          </div>
+          <div class="pricing-bottom"> <span class="pricing-dollar">40лв/месец</span> <a href="#" class="section-btn pricing-btn">Избери</a> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-1 col-md-10 col-sm-12">
+        <form id="contact-form" role="form" action="" method="post">
+          <div class="section-title">
+            <h1>Връзка с нас</h1>
+          </div>
+          <div class="col-md-4 col-sm-4">
+            <input type="text" class="form-control" placeholder="Full name" name="name" required>
+          </div>
+          <div class="col-md-4 col-sm-4">
+            <input type="email" class="form-control" placeholder="Email address" name="email" required>
+          </div>
+          <div class="col-md-4 col-sm-4">
+            <input type="submit" class="form-control" name="send message" value="Send Message">
+          </div>
+          <div class="col-md-12 col-sm-12">
+            <textarea class="form-control" rows="8" placeholder="Your message" name="message" required></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="copyright-text col-md-12 col-sm-12">
+        <div class="col-md-6 col-sm-6">
+          <p>Copyright &copy; 2025.URL Shorter task by: Виктор Михайлов</p>
+        </div>
+        <div class="col-md-6 col-sm-6">
+          <ul class="social-icon">
+            <li><a href="#" class="fa fa-facebook-square" attr="facebook icon"></a></li>
+            <li><a href="#" class="fa fa-twitter"></a></li>
+            <li><a href="#" class="fa fa-instagram"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- SCRIPTS --> 
+ <script>
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
+
+<script src="js/ln_re_pps.js"></script>
+<script src="js/jquery.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/jquery.stellar.min.js"></script> 
+<script src="js/owl.carousel.min.js"></script> 
+<script src="js/smoothscroll.js"></script> 
+<script src="js/linkgen.js"></script>
+<script src="js/custom.js"></script>
+</body>
+</html>

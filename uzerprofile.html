@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<title>Generate short url</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="team" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<!--<link rel="stylesheet" href="css/owl.theme.default.min.css">-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!--<link rel="stylesheet" href="css/font-awesome.min.css">--> 
+<!-- MAIN CSS -->
+<link rel="stylesheet" href="css/main.css">
+</head>
+<!-- LOGIN MODAL OVERLAY -->
+<div id="loginModalOverlay" class="modal-overlay"></div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+    <h2 class="modal-title">Вход</h2>
+
+    <form id="logForm" novalidate>
+      <input type="text" id="logUsername" class="form-control modal-input" placeholder="Потребителско име" required>
+      <input type="email" id="logEmail" class="form-control modal-input" placeholder="E-mail" required>
+      <input type="password" id="logPass" class="form-control modal-input" placeholder="Парола" required>
+      <a href="#" class="modal-link">Забравена парола?</a>
+      <button type="submit" class="action-btn modal-submit">Вход</button>
+      <p class="modal-footer-text">
+        Нямаш регистрация?
+        <a href="#" id="openRegisterFromLogin">Създай акаунт и се възползвай от всички функционалности още сега!</a>
+      </p>   
+    </form>
+  </div>
+</div>
+
+<!-- REGISTRATION MODAL OVERLAY -->
+<div id="registerModalOverlay" class="modal-overlay"></div>
+
+<!-- REGISTRATION MODAL -->
+<div id="registerModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span class="close-modal" onclick="closeRegisterModal()">&times;</span>
+    <h2 class="modal-title">Регистрация</h2>
+    
+    <form id="regForm" novalidate>
+      <input type="text" id="regUsername" class="form-control modal-input" placeholder="Потребителско име" required>
+      <input type="email" id="regEmail" class="form-control modal-input" placeholder="E-mail" required>
+      <input type="password" id="regPass" class="form-control modal-input" placeholder="Парола" required>
+      <input type="password" id="regRepeat" class="form-control modal-input" placeholder="Повтори парола" required>
+      <div class="checkbox-container">
+        <label><input type="checkbox" id="termsCheckbox" name="terms">Съгласие с нашите условия за използване и поверителност.</label>
+      </div>
+      <button type="submit" class="action-btn modal-submit">Регистрация</button> 
+      <p class="modal-footer-text">
+        Имаш регистрация?
+        <a href="#" id="openLoginFromRegister">Влез в акаунта си и създай първия си кратък линк още сега!</a>
+      </p>
+    </form>
+  </div>
+</div><body>
+
+<!-- PRE LOADER -->
+<section class="preloader">
+  <div class="spinner"> <span class="spinner-rotate"></span> </div>
+</section>
+
+<!-- MENU -->
+<section class="navbar custom-navbar navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="icon icon-bar"></span> <span class="icon icon-bar"></span> <span class="icon icon-bar"></span> </button>
+      
+      <!-- lOGO TEXT HERE --> 
+      <a href="index.html" class="navbar-brand">Genlink URL</a> </div>
+    
+    <!-- MENU LINKS -->
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="profile.html" class="smoothScroll">Вход</a></li>
+        <li>
+          <button class="section-btn genrnav">Регистрация</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE -->
+<section id="profile" data-stellar-background-ratio="0.5">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-3 col-md-6 col-sm-12 gencnt">
+        <div class="home-info hprofile">
+          <h3>URL Shorter позволява създаването на персонални URL адреси.</h3>
+          <h1>Ние ви помагаме да управлявате и генерирате успешно вашите URL адреси</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USER BLOCK -->
+<section id="pricing" style="padding-top:30px; padding-bottom: 50px;" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <div class="section-title" style="padding-bottom:30px">
+          <h1>Моят профил</h1>
+        </div>
+      </div>
+      <!-- Personal info -->
+      <div class="col-md-4 col-sm-6">
+        <div class="pricing-thumb">
+          <div class="pricing-title">
+            <h2>Лични данни</h2>
+          </div>
+          <div class="user-thumb nospacer">        
+            <label for="profileUsername" class="modal-label">1. Потребителско име</label>
+            <input type="text" id="profileUsername" class="form-control modal-input" placeholder="Потребителско име" required>        
+            <label for="profileEmail" class="modal-label">2. E-mail</label>
+            <input type="text" id="profileEmail" class="form-control modal-input" placeholder="Е-мейл" required>        
+            <label for="profilePassword" class="modal-label">3. Парола</label>
+            <input type="password" id="profilePassword" class="form-control modal-input" placeholder="Парола" required>        
+          </div>
+          <div class="pricing-bottom pb-pad">
+            <p class="section-btn pricing-btn disabled-btn">Запази</p>
+          </div>
+        </div>        
+      </div>
+      <!-- User plan -->
+      <div class="col-md-4 col-sm-6">
+        <div class="pricing-thumb">
+          <div class="pricing-title">
+            <h2>Моят план</h2>
+          </div>
+          <div class="pricing-info">
+            <p>5 опита на случаен принцип </p>
+            <p>5 опита до 5 символа</p>
+            <p>2 опита до 10 символа</p>
+            <p>2 опита до 15 символа</p> 
+          </div>
+          <div class="pricing-bottom"> <span class="pricing-dollar">15лв./месец</span> <a href="#" class="section-btn pricing-btn">Поднови</a> </div>
+        </div>
+      </div>
+      <!-- Sudested plan -->
+      <div class="col-md-4 col-sm-6">
+        <div class="pricing-thumb">
+          <div class="pricing-title">
+            <h2>План Про +</h2>
+          </div>
+          <div class="pricing-info">
+            <p>10 опита на случаен принцип </p>
+            <p>10 опита до 5 символа</p>
+            <p>10 опита до 10 символа</p>
+            <p>10 опита до 15 символа</p>
+          </div>
+          <div class="pricing-bottom"> <span class="pricing-dollar">40лв/месец</span> <a href="#" class="section-btn pricing-btn">Надгради</a> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  
+<section id="contact" style="padding-top:30px" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-1 col-md-10 col-sm-12">
+        <form id="mylinks-form" role="form" action="" method="post">
+          <div class="section-title" style="padding-bottom:10px">
+            <h1>Моите генерирани линкове</h1>
+            <p style="font-size:14px; font-weight:400; color:#777; margin-top:8px;">
+              Кликни в което и да е поле, за да копираш линка в клипборда.
+            </p>
+          </div>
+          <div class="col-md-4 col-sm-4" style="width:100%">
+            <div class="input-button-container-wrapper">
+              <div class="input-button-container">
+                <input type="text" id="genlo" class="form-control" placeholder="Генериран линк" name="genl1">                
+              </div>
+              <div class="input-button-container">
+                <input type="text" id="genlt" class="form-control" placeholder="Генериран линк" name="genl2">                
+              </div>
+              <div class="input-button-container">
+                <input type="text" id="genltr" class="form-control" placeholder="Генериран линк" name="genl3">                
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer" data-stellar-background-ratio="0.5">
+  <div class="container">
+    <div class="row">
+      <div class="copyright-text col-md-12 col-sm-12">
+        <div class="col-md-6 col-sm-6">
+          <p>Copyright &copy; 2025.URL Shorter task by: Виктор Михайлов</p>
+        </div>
+        <div class="col-md-6 col-sm-6">
+          <ul class="social-icon">
+            <li><a href="#" class="fa fa-facebook-square" attr="facebook icon"></a></li>
+            <li><a href="#" class="fa fa-twitter"></a></li>
+            <li><a href="#" class="fa fa-instagram"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>    
+
+<!-- SCRIPTS --> 
+<script src="js/jquery.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/ln_re_pps.js"></script>
+<script src="js/jquery.stellar.min.js"></script> 
+<script src="js/owl.carousel.min.js"></script> 
+<script src="js/smoothscroll.js"></script> 
+<script src="js/custom.js"></script>
+<script src="js/userpage.js"></script>
+</body>
+</html>
