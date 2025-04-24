@@ -10,38 +10,42 @@ const session = require('express-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Настройка на CORS за достъп от frontend клиента с бисквитки (cookies)
 app.use(cors({
   origin: ['http://localhost:3000', 'https://genlink-production.up.railway.app'],
   credentials: true
 }));
 
-app.use(express.json());
-app.use(cookieParser());
-app.set('trust proxy', 1); // 🔥 ЗАДЪЛЖИТЕЛНО за Railway/HTTPS
+app.use(express.json());               // Парсване на JSON заявки
+app.use(cookieParser());               // Парсване на cookies от клиента
+app.set('trust proxy', 1);             // Задължително за trust при proxy (Railway, HTTPS)
+
+// Настройка на сесии с express-session
 app.use(session({
-  secret: 'genlink_session_secret',
-  resave: false,
-  saveUninitialized: false,
-  proxy: true, // ❗️добави това
+  secret: 'genlink_session_secret',    // Тайна за подписване на сесиите
+  resave: false,                       // Не презаписвай сесията, ако няма промени
+  saveUninitialized: false,           // Не създавай празни сесии
+  proxy: true,                         // Използва се зад proxy (Railway)
   cookie: {
-    httpOnly: true,
-    sameSite: 'none',   // ❗️Railway = https + cross-origin
-    secure: true        // ❗️Винаги true на Railway
+    httpOnly: true,                   // Cookie-то да не е достъпно от JavaScript
+    sameSite: 'none',                 // За cross-origin session между Railway и клиента
+    secure: true                      // Cookie-то да се изпраща само по HTTPS
   }
 }));
-// Правим папката "genlink" статична
+
+// Статично обслужване на файлове от текущата директория
 app.use(express.static(path.join(__dirname)));
 
-// Връзка с MySQL база данни
+// Връзка с MySQL база данни чрез mysql2
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQL_DATABASE, // <-- това е правилната!
+  database: process.env.MYSQL_DATABASE,
   port: process.env.MYSQLPORT
 });
 
+// Потвърждение за свързване с MySQL
 db.connect((err) => {
   if (err) {
     console.error('Грешка при свързване с базата данни:', err);
@@ -50,7 +54,7 @@ db.connect((err) => {
   console.log('Свързано с MySQL базата данни');
 });
 
-// Проверка дали има активна сесия
+// Проверка дали има активна сесия (логнат потребител)
 app.get('/api/check-session', (req, res) => {
   if (req.session.user) {
     res.json({ loggedIn: true, user: req.session.user });
@@ -59,41 +63,39 @@ app.get('/api/check-session', (req, res) => {
   }
 });
 
-// Изход (logout) – изтриване на сесията
+// Изход от акаунт – изтриване на сесия и cookie
 app.post('/api/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Грешка при изход' });
     }
-    res.clearCookie('connect.sid'); // премахва cookie от браузъра
+    res.clearCookie('connect.sid'); // Изтриване на cookie-то
     res.json({ success: true, message: 'Излязохте успешно' });
   });
 });
-
 
 // Стартиране на сървъра
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
 });
 
-// Проверка дали потребител съществува по username
+// Проверка дали потребител съществува по username (преди регистрация)
 app.get('/api/check-username/:username', (req, res) => {
   const { username } = req.params;
   const query = 'SELECT * FROM users WHERE username = ?';
 
   db.query(query, [username], (err, results) => {
     if (err) {
-      console.error("❌ Грешка в /check-username:", err); // ще излезе в Railway logs
+      console.error("❌ Грешка в /check-username:", err);
       return res.status(500).json({ error: 'DB error' });
     }
 
-    console.log(`✅ Проверка на username '${username}', резултати:`, results.length);
+    console.log(`Проверка на username '${username}', резултати:`, results.length);
     res.json({ exists: results.length > 0 });
   });
 });
 
-
-// Проверка за имейл
+// Проверка дали имейл съществува (преди регистрация)
 app.get('/api/check-email/:email', (req, res) => {
   const { email } = req.params;
   const query = 'SELECT * FROM users WHERE email = ?';
@@ -103,7 +105,7 @@ app.get('/api/check-email/:email', (req, res) => {
   });
 });
 
-// Вход – проверка дали user, email и парола съвпадат
+// Вход на потребител – проверка на username, email и парола
 app.post('/api/login', (req, res) => {
   const { username, email, password } = req.body;
   const query = 'SELECT * FROM users WHERE username = ? AND email = ? AND password = ?';
@@ -112,26 +114,24 @@ app.post('/api/login', (req, res) => {
     if (results.length === 0) {
       return res.status(401).json({ success: false, message: 'Невалидни данни' });
     }
-    
-    const user = results[0];
-    
-    // Създаване на сървърна сесия
-req.session.user = {
-  id: user.ID,
-  username: user.Username,
-  email: user.Email
-};
 
-    
+    const user = results[0];
+
+    // Запазване на данните в сесия
+    req.session.user = {
+      id: user.ID,
+      username: user.Username,
+      email: user.Email
+    };
+
     res.json({
       success: true,
       user: req.session.user
-});
-
+    });
   });
 });
 
-// Регистрация – създаване на нов user
+// Регистрация на нов потребител
 app.post('/api/register', (req, res) => {
   const { username, password, email } = req.body;
   const query = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
@@ -141,7 +141,7 @@ app.post('/api/register', (req, res) => {
   });
 });
 
-// Изчистване на всички генерирани URL-и
+// Изтриване на всички линкове (Link1, Link2, Link3) от всички потребители
 app.post('/api/clear-urls', (req, res) => {
   const query = 'UPDATE users SET Link1 = NULL, Link2 = NULL, Link3 = NULL';
   db.query(query, (err, result) => {
@@ -153,7 +153,7 @@ app.post('/api/clear-urls', (req, res) => {
   });
 });
 
-// Запис на нов кратък линк за потребителя (в Link1, Link2 или Link3)
+// Запазване на ново URL в Link1, Link2 или Link3, с цикличен презапис
 app.post('/api/save-url', (req, res) => {
   const { username, shortUrl } = req.body;
 
@@ -183,7 +183,7 @@ app.post('/api/save-url', (req, res) => {
       });
     }
 
-    // Всичко е пълно → цикличен презапис
+    // Циклично презаписване в Link1–3
     let next = (user.LastSavedIndex + 1) % 3;
     const field = `Link${next + 1}`;
     const updateQuery = `UPDATE users SET ${field} = ?, LastSavedIndex = ? WHERE Username = ?`;
@@ -195,7 +195,7 @@ app.post('/api/save-url', (req, res) => {
   });
 });
 
-
+// Изтриване на един конкретен линк от логнат потребител (по име на полето)
 app.post('/api/clear-link', (req, res) => {
   const { field } = req.body;
   const validFields = ['Link1', 'Link2', 'Link3'];
@@ -214,7 +214,7 @@ app.post('/api/clear-link', (req, res) => {
 
 console.log("rebuild")
 
-// Връща генерираните линкове на логнатия потребител
+// Връщане на линковете (Link1, Link2, Link3) на логнат потребител
 app.get('/api/user-links', (req, res) => {
   if (!req.session.user || !req.session.user.username) {
     return res.status(401).json({ success: false, message: 'Няма активна сесия' });
@@ -229,8 +229,6 @@ app.get('/api/user-links', (req, res) => {
 
     const { Link1, Link2, Link3 } = results[0];
     const links = [Link1, Link2, Link3].filter(Boolean); // Премахваме празните
-
     res.json({ success: true, links });
   });
 });
-
