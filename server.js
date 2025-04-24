@@ -73,8 +73,8 @@ app.post('/api/logout', (req, res) => {
 
 
 // Стартиране на сървъра
-app.listen(PORT, () => {
-  console.log(`Сървърът работи на http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
 });
 
 // Проверка дали потребител съществува по username
