@@ -19,7 +19,6 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
-
 app.set('trust proxy', 1); // 🔥 ЗАДЪЛЖИТЕЛНО за Railway/HTTPS
 app.use(session({
   secret: 'genlink_session_secret',
@@ -32,7 +31,8 @@ app.use(session({
     secure: true        // ❗️Винаги true на Railway
   }
 }));
-
+// Правим папката "genlink" статична
+app.use(express.static(path.join(__dirname)));
 
 // Връзка с MySQL база данни
 const db = mysql.createConnection({
@@ -43,8 +43,6 @@ const db = mysql.createConnection({
   port: process.env.MYSQLPORT
 });
 
-
-
 db.connect((err) => {
   if (err) {
     console.error('Грешка при свързване с базата данни:', err);
@@ -52,12 +50,7 @@ db.connect((err) => {
   }
   console.log('Свързано с MySQL базата данни');
 });
-
 const path = require('path');
-
-// Правим папката "genlink" статична
-app.use(express.static(path.join(__dirname)));
-
 
 // Проверка дали има активна сесия
 app.get('/api/check-session', (req, res) => {
