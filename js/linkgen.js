@@ -194,7 +194,7 @@ fetch('/api/save-url', {
     else showPopup("Успех", data.message);
 })
 .catch(() => showPopup("Грешка", "Възникна грешка при записване на URL."));
-
+});
 
     // ❌ Временно деактивираме изчистването на URL-и при зареждане:
     // fetch('http://localhost:3000/api/clear-urls', {
