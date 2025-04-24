@@ -1,5 +1,6 @@
 // server.js
 const express = require('express');
+require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -28,11 +29,13 @@ app.use(session({
 
 // Връзка с MySQL база данни
 const db = mysql.createConnection({
-  host: 'localhost', // Промени с твоя хост
-  user: 'root', // Промени с потребителското си име за MySQL
-  password: 'admin', // Промени с паролата си за MySQL
-  database: 'genlinkdb' // Промени с името на базата данни
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
 });
+
 
 db.connect((err) => {
   if (err) {
