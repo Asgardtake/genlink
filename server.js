@@ -1,6 +1,7 @@
 // server.js
 const express = require('express');
 require('dotenv').config();
+process.env.NODE_ENV = 'production';
 const cookieParser = require('cookie-parser');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -27,12 +28,10 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production'
   }
 }));
-
-
 
 // Връзка с MySQL база данни
 const db = mysql.createConnection({
