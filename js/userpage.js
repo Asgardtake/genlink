@@ -1,4 +1,4 @@
-// ======= ГЛОБАЛНА ФУНКЦИЯ: Показване на попъпа за изтриване =======
+// Отваря попъп за потвърждение на изтриване на линк
 function openDeletePopup(onConfirm) {
   const overlay = document.createElement("div");
   overlay.style.position = "fixed";
@@ -86,7 +86,7 @@ function openDeletePopup(onConfirm) {
   document.body.appendChild(overlay);
 }
 
-// ======= ГЛОБАЛНА ФУНКЦИЯ: Зареждане на линкове и логика за иконки/копиране =======
+// Зарежда линковете на логнатия потребител и добавя бутони за изтриване и копиране
 async function loadGeneratedLinks() {
   try {
     const response = await fetch('/api/user-links');
@@ -213,7 +213,8 @@ async function loadGeneratedLinks() {
   }
 }
 
-
+// Изпълнява се при зареждане на страницата – проверява сесията
+// попълва полетата и активира логика за редакция на профила
 document.addEventListener("DOMContentLoaded", () => {
   fetch('/api/check-session', {
     method: 'GET',
@@ -260,6 +261,8 @@ document.addEventListener("DOMContentLoaded", () => {
         input.addEventListener("blur", checkForChanges);
       });
 
+      // Проверява дали има промени и дали всички полета са валидни,
+      // за да се покаже активен бутон "Запази"      
       function checkForChanges() {
         const currentUsername = usernameInput.value.trim();
         const currentEmail = emailInput.value.trim();
@@ -291,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
           disableSaveButton();
         }
       }
-
+      // Създава и показва активен бутон "Запази"
       function enableSaveButton() {
         const saveContainer = document.querySelector(".pricing-bottom");
         if (!saveContainer.querySelector("a.pricing-btn")) {
@@ -303,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
           saveContainer.appendChild(newBtn);
         }
       }
-
+      // Показва неактивен сив бутон "Запази"
       function disableSaveButton() {
         const saveContainer = document.querySelector(".pricing-bottom");
         if (!saveContainer.querySelector("p.disabled-btn")) {
@@ -314,6 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
           saveContainer.appendChild(newP);
         }
       }
+      // Показва съобщение за грешка под дадено поле
       function showError(input, message) {
         removeError(input);
         const error = document.createElement("div");
@@ -326,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
         input.style.marginBottom = "0";
         input.parentNode.insertBefore(error, input.nextSibling);
       }
-
+      // Премахва съобщение за грешка под дадено поле
       function removeError(input) {
         const next = input.nextSibling;
         if (next && next.classList && next.classList.contains("input-error")) {
@@ -334,21 +338,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         input.style.marginBottom = "20px";
       }
-
+      // Валидация на потребителско име
       function validateUsername(value) {
         if (!/^[a-z0-9._-]{1,15}$/.test(value.toLowerCase())) {
           return "Позволени: малки латински букви, цифри, точка, тире и долна черта (макс. 15 символа).";
         }
         return "";
       }
-
+      // Валидация на имейл адрес
       function validateEmail(value) {
         if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
           return "Невалиден e-mail адрес.";
         }
         return "";
       }
-
+       // Валидация на парола
       function validatePassword(value) {
         if (!/^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]+$/.test(value)) {
           return "Позволена е само латиница.";
@@ -373,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "index.html";
     });
 });
-
+// При връщане назад/напред със стрелките на браузъра – проверява отново сесията
 window.addEventListener("pageshow", (event) => {
   if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
     fetch('/api/check-session', {
