@@ -204,16 +204,6 @@ fetch('/api/save-url', {
 })
 .catch(() => showPopup("Грешка", "Възникна грешка при записване на URL."));
 });
-
-    // ❌ Временно деактивираме изчистването на URL-и при зареждане:
-    // fetch('http://localhost:3000/api/clear-urls', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' }
-    // }).then(res => res.json()).then(data => {
-    //     console.log(data.message);
-    // }).catch(err => {
-    //     console.error("Грешка при изтриване:", err);
-    // });
 });
 
 // POPUP
