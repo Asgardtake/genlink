@@ -21,17 +21,18 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.set('trust proxy', 1); // 🔥 ЗАДЪЛЖИТЕЛНО за Railway/HTTPS
-
 app.use(session({
   secret: 'genlink_session_secret',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  proxy: true, // ❗️добави това
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production'
+    httpOnly: true,
+    sameSite: 'none',   // ❗️Railway = https + cross-origin
+    secure: true        // ❗️Винаги true на Railway
   }
 }));
+
 
 // Връзка с MySQL база данни
 const db = mysql.createConnection({
