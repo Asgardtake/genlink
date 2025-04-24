@@ -202,7 +202,7 @@ app.post('/api/clear-link', (req, res) => {
   });
 });
 
-
+console.log("rebuild")
 
 // Връща генерираните линкове на логнатия потребител
 app.get('/api/user-links', (req, res) => {
