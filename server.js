@@ -19,16 +19,19 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+app.set('trust proxy', 1); // 🔥 ЗАДЪЛЖИТЕЛНО за Railway/HTTPS
+
 app.use(session({
-  secret: 'genlink_session_secret', // Можеш да смениш с произволен string
+  secret: 'genlink_session_secret',
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000, // 24 часа
-    sameSite: 'lax',
-    secure: false
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: process.env.NODE_ENV === 'production'
   }
 }));
+
 
 
 // Връзка с MySQL база данни
