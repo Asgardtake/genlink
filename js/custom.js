@@ -4,6 +4,33 @@
   // PRE LOADER
   $(window).on('load', function () {
     $('.preloader').fadeOut(1000); // set duration in brackets    
+
+    // === ВИДЕО/ИЗОБРАЖЕНИЕ ЗА ДЕСКТОП И МОБИЛЕН ===
+    const isMobile = window.innerWidth <= 768;
+    const homeSection = document.querySelector("#home");
+
+    if (!isMobile && homeSection) {
+      const video = document.createElement("video");
+      video.src = "images/mvngr.mp4";
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute("aria-hidden", "true");
+      video.style.position = "absolute";
+      video.style.top = "0";
+      video.style.left = "0";
+      video.style.width = "100%";
+      video.style.height = "100%";
+      video.style.objectFit = "cover";
+      video.style.zIndex = "-1";
+
+      video.addEventListener("canplaythrough", function () {
+        homeSection.style.background = "none";
+      });
+
+      homeSection.prepend(video);
+    }
   });
 
   // MENU
