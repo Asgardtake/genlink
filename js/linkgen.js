@@ -182,18 +182,19 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch('http://localhost:3000/api/save-url', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ longUrl, shortUrl, username })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) showPopup("Грешка", data.error);
-                else showPopup("Успех", data.message);
-            })
-            .catch(() => showPopup("Грешка", "Възникна грешка при записване на URL."));
-    });
+fetch('/api/save-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ longUrl, shortUrl, username }),
+    credentials: 'include'  // 🟢 това е ключово!
+})
+.then(res => res.json())
+.then(data => {
+    if (data.error) showPopup("Грешка", data.error);
+    else showPopup("Успех", data.message);
+})
+.catch(() => showPopup("Грешка", "Възникна грешка при записване на URL."));
+
 
     // ❌ Временно деактивираме изчистването на URL-и при зареждане:
     // fetch('http://localhost:3000/api/clear-urls', {
