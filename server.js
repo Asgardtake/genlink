@@ -56,7 +56,7 @@ const path = require('path');
 app.use(express.static(path.join(__dirname)));
 
 
-// Проверка дали има активна сесия (използва се от клиента)
+// Проверка дали има активна сесия
 app.get('/api/check-session', (req, res) => {
   if (req.session.user) {
     res.json({ loggedIn: true, user: req.session.user });
