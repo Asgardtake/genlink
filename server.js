@@ -123,10 +123,11 @@ app.post('/api/login', (req, res) => {
     
     // Създаване на сървърна сесия
 req.session.user = {
-  id: user.id,
-  username: user.username,
-  email: user.email
+  id: user.ID,
+  username: user.Username,
+  email: user.Email
 };
+
     
     res.json({
       success: true,
