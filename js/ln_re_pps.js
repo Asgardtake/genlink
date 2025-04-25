@@ -764,8 +764,7 @@ regForm.addEventListener("submit", async function (e) {
 
       // След кратка пауза отваряме login popup
       setTimeout(() => {
-        openModal("loginModal", "loginModalOverlay");
-        location.reload();
+        openModal("loginModal", "loginModalOverlay");        
       }, 300);
     } else {
       // ❌ Грешка от сървъра
