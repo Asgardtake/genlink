@@ -48,6 +48,7 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 console.log('MySQL пул от връзки е създаден');
+console.log("Промяна за форсиране на билд");
 
 
 // Проверка дали има активна сесия (логнат потребител)
