@@ -36,7 +36,6 @@ app.use(session({
 // Статично обслужване на файлове от текущата директория
 app.use(express.static(path.join(__dirname)));
 
-// Връзка с MySQL база данни чрез mysql2
 // Връзка с MySQL база данни чрез mysql2 (POOL)
 const db = mysql.createPool({
   host: process.env.MYSQLHOST,
@@ -48,18 +47,8 @@ const db = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-
 console.log('MySQL пул от връзки е създаден');
 
-
-// Потвърждение за свързване с MySQL
-db.connect((err) => {
-  if (err) {
-    console.error('Грешка при свързване с базата данни:', err);
-    return;
-  }
-  console.log('Свързано с MySQL базата данни');
-});
 
 // Проверка дали има активна сесия (логнат потребител)
 app.get('/api/check-session', (req, res) => {
