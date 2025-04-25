@@ -12,7 +12,7 @@ function generateShortUrl() {
     const urlPattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,3}(\/[\w\d\-@#!?%[\]{}_+=*$/&(){}:]*)*$/i;
 
     if (!longUrl) {
-        showPopup("Моля, въведете URL адрес.");
+        showPopup("", "Моля, въведете URL адрес.");
         pathLengthElement.style.display = "none";
         return;
     }
@@ -30,7 +30,7 @@ function generateShortUrl() {
         const totalLength = url.protocol.length + url.hostname.length + url.pathname.length;
 
         if (totalLength < 25) {
-            showPopup("Грешка", "Въведеният URL е твърде кратък. Минимум 25 символа.");
+            showPopup("", "Въведеният URL е твърде кратък. Минимум 25 символа.");
             pathLengthElement.style.display = "none";
             return;
         }
@@ -61,7 +61,7 @@ function generateShortUrl() {
 
         window.hasGeneratedBefore = true;
     } catch {
-        showPopup("Грешка", "Невалиден URL.");
+        showPopup("", "Невалиден URL.");
         pathLengthElement.style.display = "none";
     }
 }
@@ -219,7 +219,7 @@ function showPopup(title, message) {
     popup.innerHTML = `
         <div class="popup-overlay">
             <div class="popup-box">
-                <h2>${title}</h2>
+                ${title ? `<h2>${title}</h2>` : ""}
                 <p>${message}</p>
                 <button onclick="this.closest('.popup-overlay').remove()">Затвори</button>
             </div>
@@ -240,3 +240,4 @@ function showPopup(title, message) {
     `;
     document.body.appendChild(popup);
 }
+
