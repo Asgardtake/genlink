@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         .then(res => res.json())
         .then(data => {
             if (data.error) showPopup("Грешка", data.error);
-            else showPopup("", data.message);
+            else showPopup("Супер", data.message);
         })
         .catch(() => showPopup("Възникна грешка при записване на URL."));
     });
