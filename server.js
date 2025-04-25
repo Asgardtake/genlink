@@ -37,12 +37,15 @@ app.use(session({
 app.use(express.static(path.join(__dirname)));
 
 // Връзка с MySQL база данни чрез mysql2
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQL_DATABASE,
-  port: process.env.MYSQLPORT
+  port: process.env.MYSQLPORT,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 // Потвърждение за свързване с MySQL
