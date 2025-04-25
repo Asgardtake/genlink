@@ -37,6 +37,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname)));
 
 // Връзка с MySQL база данни чрез mysql2
+// Връзка с MySQL база данни чрез mysql2 (POOL)
 const db = mysql.createPool({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
@@ -47,6 +48,9 @@ const db = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
+
+console.log('MySQL пул от връзки е създаден');
+
 
 // Потвърждение за свързване с MySQL
 db.connect((err) => {
