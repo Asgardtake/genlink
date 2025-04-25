@@ -12,13 +12,13 @@ function generateShortUrl() {
     const urlPattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,3}(\/[\w\d\-@#!?%[\]{}_+=*$/&(){}:]*)*$/i;
 
     if (!longUrl) {
-        showPopup("Грешка", "Моля, въведете URL адрес.");
+        showPopup("Моля, въведете URL адрес.");
         pathLengthElement.style.display = "none";
         return;
     }
 
     if (!urlPattern.test(longUrl)) {
-        showPopup("Грешка", "Моля, въведете валиден URL, напр. 'https://example.com'");
+        showPopup("Моля, въведете валиден URL, напр. 'https://example.com'");
         pathLengthElement.style.display = "none";
         return;
     }
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     
         // 🟢 Проверка за валидни полета
         if (!longUrl || !shortUrl) {
-            showPopup("Грешка", "Моля, въведете и дълъг, и кратък URL.");
+            showPopup("Моля, въведете и дълъг, и кратък URL.");
             return;
         }
     
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (data.error) showPopup("Грешка", data.error);
             else showPopup("Успех", data.message);
         })
-        .catch(() => showPopup("Грешка", "Възникна грешка при записване на URL."));
+        .catch(() => showPopup("Възникна грешка при записване на URL."));
     });
     
 });
