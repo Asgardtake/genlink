@@ -765,6 +765,7 @@ regForm.addEventListener("submit", async function (e) {
       // След кратка пауза отваряме login popup
       setTimeout(() => {
         openModal("loginModal", "loginModalOverlay");
+        location.reload();
       }, 300);
     } else {
       // ❌ Грешка от сървъра
@@ -1340,7 +1341,7 @@ logForm.addEventListener("submit", async function (e) {
         return;
       }
       showLoggedInNavbar(matchedUser.username);
-
+      location.reload();
     } else {
       const globalError = document.createElement("div");
       globalError.id = "loginGlobalError";
