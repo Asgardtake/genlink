@@ -177,34 +177,37 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     document.getElementById("saveButton").addEventListener("click", () => {
-        const longUrl = longUrlInput.value;
-        const shortUrl = document.getElementById('shorturl').value;
+        const longUrl = document.getElementById("longurl").value;
+        const shortUrl = document.getElementById("shorturl").value;
+    
+        // 🟢 Проверка: има ли логнат потребител?
         const username = window.loggedInUsername;
-
         if (!username) {
             openModal("loginModal", "loginModalOverlay");
-
             return;
         }
-
+    
+        // 🟢 Проверка за валидни полета
         if (!longUrl || !shortUrl) {
             showPopup("Грешка", "Моля, въведете и дълъг, и кратък URL.");
             return;
         }
-
-fetch('/api/save-url', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ longUrl, shortUrl, username }),
-    credentials: 'include'  // 🟢 това е ключово!
-})
-.then(res => res.json())
-.then(data => {
-    if (data.error) showPopup("Грешка", data.error);
-    else showPopup("Успех", data.message);
-})
-.catch(() => showPopup("Грешка", "Възникна грешка при записване на URL."));
-});
+    
+        // 🟢 Изпращаме заявка към сървъра
+        fetch('/api/save-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ longUrl, shortUrl, username }),
+            credentials: 'include'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) showPopup("Грешка", data.error);
+            else showPopup("Успех", data.message);
+        })
+        .catch(() => showPopup("Грешка", "Възникна грешка при записване на URL."));
+    });
+    
 });
 
 // POPUP
