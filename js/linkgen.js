@@ -182,7 +182,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const username = window.loggedInUsername;
 
         if (!username) {
-            showPopup("Грешка", "Няма логнат потребител.");
+            openModal("loginModal", "loginModalOverlay");
+
             return;
         }
 
