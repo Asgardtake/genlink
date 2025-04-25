@@ -229,3 +229,9 @@ app.get('/api/user-links', (req, res) => {
     res.json({ success: true, links });
   });
 });
+// API маршрут за версия на backend-а
+const APP_VERSION = 'v1.0.0'; // сменяй ръчно при промени
+
+app.get('/api/version', (req, res) => {
+  res.json({ version: APP_VERSION });
+});
