@@ -18,7 +18,7 @@ function generateShortUrl() {
     }
 
     if (!urlPattern.test(longUrl)) {
-        showPopup("Моля, въведете валиден URL, напр. 'https://example.com'");
+        showPopup("", "Моля, въведете валиден URL, напр. 'https://example.com'");
         pathLengthElement.style.display = "none";
         return;
     }
