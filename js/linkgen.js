@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         .then(res => res.json())
         .then(data => {
             if (data.error) showPopup("Грешка", data.error);
-            else showPopup("Готово", data.message);
+            else showPopup("", data.message);
         })
         .catch(() => showPopup("Грешка при записа на URL."));
     });
