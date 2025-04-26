@@ -76,6 +76,10 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// Рут за обслужване на index.html при директен достъп чрез линкове (например от логото в навигацията)
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Стартиране на сървъра
 app.listen(PORT, '0.0.0.0', () => {
