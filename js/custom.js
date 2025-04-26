@@ -66,17 +66,19 @@
   }
 
   // SMOOTHSCROLL с проверка за съществуващ anchor
-  $('.custom-navbar a').on('click', function (event) {
-    const $anchor = $(this);
-    const target = $($anchor.attr('href'));
+$('.custom-navbar a').on('click', function (event) {
+  const $anchor = $(this);
+  const href = $anchor.attr('href');
 
+  // Само ако href започва с # => smooth scroll
+  if (href.startsWith("#")) {
+    const target = $(href);
     if (target.length) {
       $('html, body').stop().animate({
         scrollTop: target.offset().top - 49
       }, 1000);
     }
-
     event.preventDefault();
-  });
-
+  }
+});
 })(jQuery);
