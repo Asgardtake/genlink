@@ -81,10 +81,7 @@ app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Стартиране на сървъра
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
-});
+
 
 // Проверка дали потребител съществува по username (преди регистрация)
 app.get('/api/check-username/:username', (req, res) => {
@@ -137,6 +134,39 @@ app.post('/api/login', (req, res) => {
     });
   });
 });
+
+
+
+
+
+
+
+// 🟢 Нов маршрут за ВХОД НА АДМИНИСТРАТОР
+app.post('/api/admin_login', (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: 'Липсват данни' });
+  }
+
+  const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+  db.query(query, [username, password], (err, results) => {
+    if (err) {
+      console.error('❌ Грешка при заявка за админ логин:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (results.length > 0) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(401).json({ success: false, message: 'Невалидни данни' });
+    }
+  });
+});
+
+
+
+
 
 // Регистрация на нов потребител
 app.post('/api/register', (req, res) => {
@@ -239,9 +269,16 @@ app.get('/api/user-links', (req, res) => {
     res.json({ success: true, links });
   });
 });
+
 // API маршрут за версия на backend-а
 const APP_VERSION = 'v1.0.2'; // сменяй ръчно при промени
 
 app.get('/api/version', (req, res) => {
   res.json({ version: APP_VERSION });
 });
+
+// Стартиране на сървъра
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
+});
+
