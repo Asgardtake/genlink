@@ -64,6 +64,7 @@ app.post("/api/admin-login", (req, res) => {
 
 
 
+
 const mysql = require('mysql2');
 // Връзка към твоя Railway MySQL база
 const connection = mysql.createConnection({
