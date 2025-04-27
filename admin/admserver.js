@@ -62,59 +62,50 @@ app.post("/api/admin-login", (req, res) => {
   }
 });
 
+
+
 const mysql = require('mysql2');
-
-// Създай връзка към Railway базата
+// Връзка към твоя Railway MySQL база
 const connection = mysql.createConnection({
-    host: 'твоя-host',   // Пример: 'containers-us-west-94.railway.app'
-    user: 'твоя-username',
-    password: 'твоя-password',
-    database: 'твоя-database',
-    port: 3306 // Или ако Railway ти даде друг порт
+    host: 'ТВОЯ_HOST',   // напр. 'containers-us-west-94.railway.app'
+    user: 'ТВОЯ_USER',
+    password: 'ТВОЯ_PASSWORD',
+    database: 'ТВОЯ_DATABASE',
+    port: 3306 // или друг порт от Railway
 });
-
-// Свързване с базата
 connection.connect((err) => {
     if (err) {
-        console.error('Грешка при връзката с базата:', err);
+        console.error('Грешка при връзка с базата:', err);
         return;
     }
-    console.log('Свързано с MySQL базата');
+    console.log('Успешно свързан с базата');
 });
-
-// Маршрут за вход на админ
+// Само проверка по username И password от базата
 app.post('/api/admin_login', (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.status(400).json({ success: false, message: 'Missing credentials' });
+        return res.status(400).json({ success: false, message: 'Липсват данни' });
     }
-
-    // Търси админа в базата
     connection.query(
-        'SELECT * FROM users WHERE username = ?',
-        [username],
+        'SELECT * FROM users WHERE username = ? AND password = ?',
+        [username, password],
         (error, results) => {
             if (error) {
-                console.error('Грешка при заявка:', error);
-                return res.status(500).json({ success: false, message: 'Database error' });
+                console.error('Грешка при заявката:', error);
+                return res.status(500).json({ success: false, message: 'Грешка в базата' });
             }
-
-            if (results.length === 0) {
-                return res.status(401).json({ success: false, message: 'Invalid username or password' });
-            }
-
-            const user = results[0];
-
-            // Проверка дали паролата съвпада
-            if (user.password === password) {
+            if (results.length > 0) {
+                // Има такъв потребител с това име и парола
                 res.status(200).json({ success: true });
             } else {
-                res.status(401).json({ success: false, message: 'Invalid username or password' });
+                // Няма такъв потребител
+                res.status(401).json({ success: false, message: 'Невалидни данни' });
             }
         }
     );
 });
+
 
 
 app.listen(3000, () => {
