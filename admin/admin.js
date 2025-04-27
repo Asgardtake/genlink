@@ -206,7 +206,7 @@ function createAdminLoginPopup() {
       return;
     }
 
-    fetch("/api/admin-login", {
+    fetch("/api/admin_login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
