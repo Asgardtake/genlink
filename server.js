@@ -270,6 +270,20 @@ app.get('/api/user-links', (req, res) => {
   });
 });
 
+
+// Връщане на всички потребители за админ панела
+app.get('/api/users', (req, res) => {
+  const query = 'SELECT * FROM users';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('❌ Грешка при зареждане на потребители:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results);
+  });
+});
+
+
 // API маршрут за версия на backend-а
 const APP_VERSION = 'v1.0.2'; // сменяй ръчно при промени
 
