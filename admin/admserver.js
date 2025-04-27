@@ -1,22 +1,27 @@
+// admserver.js
 const express = require("express");
 const mysql = require("mysql2");
 const path = require("path");
+require('dotenv').config(); // Зарежда .env променливите
 
 const app = express();
 
-// 🟢 Първо JSON middleware
+// 🟢 Middleware за JSON заявки
 app.use(express.json());
 
-// 🟢 Статични файлове
+// 🟢 Статични файлове от главната папка (../)
 app.use(express.static(path.join(__dirname, "..")));
 
+// 🟢 Връзка с Railway MySQL база през .env променливи
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "admin",
-  database: "genlinkdb"
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  port: process.env.MYSQLPORT
 });
 
+// 🟢 Свързване към базата
 db.connect((err) => {
   if (err) {
     console.error("❌ Неуспешна връзка с базата:", err);
@@ -25,6 +30,7 @@ db.connect((err) => {
   }
 });
 
+// 🟢 Маршрут: Връщане на всички потребители
 app.get("/api/users", (req, res) => {
   db.query("SELECT * FROM users", (err, results) => {
     if (err) {
@@ -35,10 +41,10 @@ app.get("/api/users", (req, res) => {
   });
 });
 
+// 🟢 Маршрут: Изтриване на потребител
 app.delete("/api/delete-user/:username", (req, res) => {
   const { username } = req.params;
-
-  const query = "DELETE FROM users WHERE Username = ?";
+  const query = "DELETE FROM users WHERE username = ?";
   db.query(query, [username], (err, result) => {
     if (err) {
       console.error("❌ Грешка при изтриване на потребител:", err);
@@ -53,62 +59,30 @@ app.delete("/api/delete-user/:username", (req, res) => {
   });
 });
 
-app.post("/api/admin-login", (req, res) => {
+// 🟢 Маршрут: Вход за администратор (проверка username + password от базата)
+app.post("/api/admin_login", (req, res) => {
   const { username, password } = req.body;
-  if (username === "admin" && password === "admin123") {
-    res.json({ success: true });
-  } else {
-    res.json({ success: false });
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: "Липсват данни" });
   }
-});
 
-
-
-
-const mysql = require('mysql2');
-// Връзка към твоя Railway MySQL база
-const connection = mysql.createConnection({
-    host: 'ТВОЯ_HOST',   // напр. 'containers-us-west-94.railway.app'
-    user: 'ТВОЯ_USER',
-    password: 'ТВОЯ_PASSWORD',
-    database: 'ТВОЯ_DATABASE',
-    port: 3306 // или друг порт от Railway
-});
-connection.connect((err) => {
+  const query = "SELECT * FROM users WHERE username = ? AND password = ?";
+  db.query(query, [username, password], (err, results) => {
     if (err) {
-        console.error('Грешка при връзка с базата:', err);
-        return;
+      console.error("❌ Грешка при заявка за админ логин:", err);
+      return res.status(500).json({ success: false, message: "Database error" });
     }
-    console.log('Успешно свързан с базата');
-});
-// Само проверка по username И password от базата
-app.post('/api/admin_login', (req, res) => {
-    const { username, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ success: false, message: 'Липсват данни' });
+    if (results.length > 0) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(401).json({ success: false, message: "Невалидни данни" });
     }
-    connection.query(
-        'SELECT * FROM users WHERE username = ? AND password = ?',
-        [username, password],
-        (error, results) => {
-            if (error) {
-                console.error('Грешка при заявката:', error);
-                return res.status(500).json({ success: false, message: 'Грешка в базата' });
-            }
-            if (results.length > 0) {
-                // Има такъв потребител с това име и парола
-                res.status(200).json({ success: true });
-            } else {
-                // Няма такъв потребител
-                res.status(401).json({ success: false, message: 'Невалидни данни' });
-            }
-        }
-    );
+  });
 });
 
-
-
+// 🟢 Стартиране на сървъра
 app.listen(3000, () => {
   console.log("🚀 Admin сървърът работи на http://localhost:3000");
 });
