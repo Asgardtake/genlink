@@ -135,12 +135,6 @@ app.post('/api/login', (req, res) => {
   });
 });
 
-
-
-
-
-
-
 // 🟢 Нов маршрут за ВХОД НА АДМИНИСТРАТОР
 app.post('/api/admin_login', (req, res) => {
   const { username, password } = req.body;
@@ -163,10 +157,6 @@ app.post('/api/admin_login', (req, res) => {
     }
   });
 });
-
-
-
-
 
 // Регистрация на нов потребител
 app.post('/api/register', (req, res) => {
@@ -249,8 +239,26 @@ app.post('/api/clear-link', (req, res) => {
   });
 });
 
-console.log("rebuild")
 
+// Изтриване на потребител от админ панела
+app.delete('/api/delete-user/:username', (req, res) => {
+  const { username } = req.params;
+  const query = 'DELETE FROM users WHERE username = ?';
+  db.query(query, [username], (err, result) => {
+    if (err) {
+      console.error('❌ Грешка при изтриване на потребител:', err);
+      return res.status(500).json({ success: false, error: 'Database error' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Потребителят не е намерен.' });
+    }
+    res.json({ success: true, message: 'Потребителят е изтрит успешно.' });
+  });
+});
+
+
+
+console.log("rebuild")
 // Връщане на линковете (Link1, Link2, Link3) на логнат потребител
 app.get('/api/user-links', (req, res) => {
   if (!req.session.user || !req.session.user.username) {
