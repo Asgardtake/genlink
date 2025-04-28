@@ -499,3 +499,8 @@ function showAlertModal(message) {
   });
 }
 
+// API маршрут за версия на backend-а
+const APP_VERSION = 'v1.0.2'; // сменяй ръчно при промени
+app.get('/api/version', (req, res) => {
+  res.json({ version: APP_VERSION });
+});
