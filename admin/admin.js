@@ -499,4 +499,4 @@ function showAlertModal(message) {
   });
 }
 
-// Version: v1.0.2 | Last updated: 2025-04-28
+// Version: v1.0.3 | Last updated: 2025-04-28
