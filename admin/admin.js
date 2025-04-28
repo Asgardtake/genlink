@@ -42,7 +42,7 @@ function createAdminLoginPopup() {
       return;
     }
     if (!username.endsWith("_gsu.admin")) {
-      errorDiv.textContent = "Грешно потрбителско име!";
+      errorDiv.textContent = "Грешно потребителско име!";
       return;
     }
 
@@ -110,8 +110,9 @@ function loadUsers() {
 
   const table = document.createElement("table");
   table.style.width = "100%";
-  table.style.borderCollapse = "collapse";
   table.style.marginTop = "20px";
+  table.style.borderCollapse = "separate";
+  table.style.borderSpacing = "0";
 
   const headerRow = document.createElement("tr");
   const headers = ["Потребителско име", "E-mail", "Парола", "GenLink"];
@@ -127,79 +128,154 @@ function loadUsers() {
   });
   table.appendChild(headerRow);
 
-  fetch(`${window.location.origin}/api/users`)
-    .then((response) => response.json())
-    .then((users) => {
-      users.forEach((user) => {
-        const row = document.createElement("tr");
-        row.style.transition = "background 0.2s ease";
-        row.style.cursor = "pointer";
+fetch(`${window.location.origin}/api/users`)
+  .then((response) => response.json())
+  .then((users) => {
+    users.forEach((user) => {
+      const row = document.createElement("tr");
+      row.style.transition = "background 0.2s ease";
+      row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
 
-row.addEventListener("mouseenter", () => {
-  row.style.backgroundColor = "#29ca8e"; // сив фон
+      if (user.Username.endsWith("_gsu.admin")) {
+        row.style.backgroundColor = "#ffecec";
 
-  // При ховър сменяме цвета на текстовете в реда
-  row.querySelectorAll("td, span").forEach((el) => {
-    el.style.color = "#fff"; // например зелено
+        // ЗАОБЛЯНЕ НА ЪГЛИТЕ ЗА АДМИНСКИЯ РЕД
+        const adminCells = row.querySelectorAll("td");
+        adminCells.forEach((cell) => {
+          cell.style.backgroundColor = "#ffecec"; // Задаваме същия фон за всяка клетка
+          cell.style.transition = "all 0.3s ease"; // Плавна анимация
+        });
+
+        if (adminCells.length > 0) {
+          adminCells[0].style.borderTopLeftRadius = "10px";
+          adminCells[0].style.borderBottomLeftRadius = "10px";
+          adminCells[adminCells.length - 1].style.borderTopRightRadius = "10px";
+          adminCells[adminCells.length - 1].style.borderBottomRightRadius = "10px";
+        }
+      } else {
+        row.addEventListener("mouseenter", () => {
+          const cells = row.querySelectorAll("td");
+          if (cells.length > 0) {
+            cells[0].style.borderTopLeftRadius = "10px";
+            cells[0].style.borderBottomLeftRadius = "10px";
+            cells[cells.length - 1].style.borderTopRightRadius = "10px";
+            cells[cells.length - 1].style.borderBottomRightRadius = "10px";
+            cells.forEach(cell => {
+              cell.style.backgroundColor = "#29ca8e";
+              cell.style.color = "#fff";
+            });
+          }
+        });
+      }
+    });
+  })
+  .catch((err) => {
+    console.error("⚠️ Грешка при зареждане на потребителите:", err);
   });
-});
-
-row.addEventListener("mouseleave", () => {
-  row.style.backgroundColor = "transparent"; // връщаме фона
-
-  // Връщаме оригиналния цвят на текстовете
-  row.querySelectorAll("td, span").forEach((el) => {
-    el.style.color = "#333"; // връщаме обичайния сив текст
-  });
-});
- // Отваря попъпа!
-row.addEventListener("click", () => {
-  showUserPopup(user);
-});       
 
 
-        const usernameCell = document.createElement("td");
-        usernameCell.textContent = user.Username || "";
-        usernameCell.style.padding = "10px";
-        usernameCell.style.textAlign = "left";
-        row.appendChild(usernameCell);
-
-        const emailCell = document.createElement("td");
-        emailCell.textContent = user.Email || "";
-        emailCell.style.padding = "10px";
-        emailCell.style.textAlign = "left";
-        row.appendChild(emailCell);
-
-        const passwordCell = document.createElement("td");
-        passwordCell.textContent = user.Password || "";
-        passwordCell.style.padding = "10px";
-        passwordCell.style.textAlign = "left";
-        row.appendChild(passwordCell);
-
-        const linkCell = document.createElement("td");
-        linkCell.style.padding = "10px";
-        linkCell.style.lineHeight = "1.8";
-        linkCell.style.textAlign = "left";
-        linkCell.style.position = "relative";
-
-        const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
-        if (links.length > 0) {
-links.forEach((link) => {
-  const linkElement = document.createElement("span"); // ВАЖНО: СПАН, НЕ a
-  linkElement.textContent = link;
-  linkElement.style.display = "block";
-  linkElement.style.color = "#333";
-  linkElement.style.textDecoration = "none";
-  linkElement.style.marginBottom = "8px";
-  linkCell.appendChild(linkElement);
-});
-        } else {
-          linkCell.textContent = "—";
+          row.addEventListener("click", () => {
+            showUserPopup(user);
+          });
         }
 
-        row.appendChild(linkCell);
+        // Потребителско име
+        const usernameCell = document.createElement("td");
+        usernameCell.style.backgroundColor = "transparent";
+        usernameCell.style.transition = "all 0.3s ease";
+        usernameCell.style.padding = "10px";
+        usernameCell.style.textAlign = "left";
+
+        if (user.Username.endsWith("_gsu.admin")) {
+          const fullUsername = user.Username;
+          const maskedUsername = 
+            fullUsername.length > 5 
+              ? fullUsername.slice(0, 3) + '*****' + fullUsername.slice(-2) + '...'
+              : fullUsername;
+          usernameCell.textContent = maskedUsername;
+        } else {
+          usernameCell.textContent = user.Username || "";
+        }
+        row.appendChild(usernameCell);
+
+        if (user.Username.endsWith("_gsu.admin")) {
+const adminInfoCell = document.createElement("td");
+adminInfoCell.textContent = "Админски профил";
+adminInfoCell.style.color = "#e74c3c";
+adminInfoCell.style.fontSize = "14px";
+adminInfoCell.style.fontWeight = "normal";
+adminInfoCell.style.padding = "10px";
+adminInfoCell.style.textAlign = "left";
+
+const emptyCell1 = document.createElement("td");
+emptyCell1.textContent = "—";
+emptyCell1.style.padding = "10px";
+emptyCell1.style.textAlign = "left";
+
+const emptyCell2 = document.createElement("td");
+emptyCell2.textContent = "—";
+emptyCell2.style.padding = "10px";
+emptyCell2.style.textAlign = "left";
+
+// Добавяме всичките 3 клетки
+row.appendChild(adminInfoCell);
+row.appendChild(emptyCell1);
+row.appendChild(emptyCell2);
+
+
+          const adminCells = row.querySelectorAll("td");
+          if (adminCells.length > 0) {
+            adminCells[0].style.borderTopLeftRadius = "10px";
+            adminCells[0].style.borderBottomLeftRadius = "10px";
+            adminCells[adminCells.length - 1].style.borderTopRightRadius = "10px";
+            adminCells[adminCells.length - 1].style.borderBottomRightRadius = "10px";
+          }
+        } else {
+          // E-mail
+          const emailCell = document.createElement("td");
+          emailCell.style.backgroundColor = "transparent";
+          emailCell.style.transition = "all 0.3s ease";
+          emailCell.textContent = user.Email || "";
+          emailCell.style.padding = "10px";
+          emailCell.style.textAlign = "left";
+          row.appendChild(emailCell);
+
+          // Парола
+          const passwordCell = document.createElement("td");
+          passwordCell.style.backgroundColor = "transparent";
+          passwordCell.style.transition = "all 0.3s ease";
+          passwordCell.textContent = user.Password || "";
+          passwordCell.style.padding = "10px";
+          passwordCell.style.textAlign = "left";
+          row.appendChild(passwordCell);
+
+          // Линкове
+          const linkCell = document.createElement("td");
+          linkCell.style.backgroundColor = "transparent";
+          linkCell.style.transition = "all 0.3s ease";
+          linkCell.style.padding = "10px";
+          linkCell.style.lineHeight = "1.8";
+          linkCell.style.textAlign = "left";
+
+          const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
+          if (links.length > 0) {
+            links.forEach((link) => {
+              const linkElement = document.createElement("span");
+              linkElement.textContent = link;
+              linkElement.style.display = "block";
+              linkElement.style.color = "#333";
+              linkElement.style.marginBottom = "8px";
+              linkCell.appendChild(linkElement);
+            });
+          } else {
+            linkCell.textContent = "—";
+          }
+          row.appendChild(linkCell);
+        }
+
         table.appendChild(row);
       });
+
       container.appendChild(table);
     })
     .catch((err) => {
@@ -211,6 +287,9 @@ links.forEach((link) => {
       container.appendChild(error);
     });
 }
+
+
+
 function adminLogout() {
   sessionStorage.removeItem("adminLoggedIn");
 
@@ -353,7 +432,7 @@ const linkInputs = links.length > 0
   function validatePopupPassword() {
     const value = popupPassword.value.trim();
     if (!value) return false;
-    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value)
+   const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value)
             && /[A-Z]/.test(value)
             && /[0-9]/.test(value)
             && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]/.test(value)
@@ -545,4 +624,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.0.6 | Last updated: 2025-04-28
+// Version: v1.1.0 | Last updated: 2025-04-28
