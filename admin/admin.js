@@ -47,7 +47,8 @@ function createAdminLoginPopup() {
     }
 
     // Валидация за password
-    const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/';~]+$/;
+const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/'`;~]+$/;
+
     if (!passwordRegex.test(password)) {
       errorDiv.textContent = "Паролата съдържа неразрешени символи.";
       return;
