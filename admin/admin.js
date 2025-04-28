@@ -127,90 +127,101 @@ function loadUsers() {
   });
   table.appendChild(headerRow);
 
-  fetch(`${window.location.origin}/api/users`)
-    .then((response) => response.json())
-    .then((users) => {
-      users.forEach((user) => {
-        const row = document.createElement("tr");
-        row.style.transition = "background 0.2s ease";
-        row.style.cursor = "pointer";
+ fetch(`${window.location.origin}/api/users`)
+  .then((response) => response.json())
+  .then((users) => {
+    users.forEach((user) => {
+      const row = document.createElement("tr");
+      row.style.transition = "background 0.2s ease";
+      row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
+      
+      // Промяна: Ако профилът е админски, фонът на реда става леко червен
+      if (user.Username.endsWith("_gsu.admin")) {
+        row.style.backgroundColor = "#ffecec";
+      }
 
-row.addEventListener("mouseenter", () => {
-  row.style.backgroundColor = "#29ca8e"; // сив фон
+      // Ховър ефекти само за НЕадмин профили
+      if (!user.Username.endsWith("_gsu.admin")) {
+        row.addEventListener("mouseenter", () => {
+          row.style.backgroundColor = "#29ca8e";
+          row.querySelectorAll("td, span").forEach((el) => el.style.color = "#fff");
+        });
 
-  // При ховър сменяме цвета на текстовете в реда
-  row.querySelectorAll("td, span").forEach((el) => {
-    el.style.color = "#fff"; // например зелено
-  });
-});
+        row.addEventListener("mouseleave", () => {
+          row.style.backgroundColor = "transparent";
+          row.querySelectorAll("td, span").forEach((el) => el.style.color = "#333");
+        });
 
-row.addEventListener("mouseleave", () => {
-  row.style.backgroundColor = "transparent"; // връщаме фона
+        // Попъп само за НЕадмин профили
+        row.addEventListener("click", () => {
+          showUserPopup(user);
+        });
+      }
 
-  // Връщаме оригиналния цвят на текстовете
-  row.querySelectorAll("td, span").forEach((el) => {
-    el.style.color = "#333"; // връщаме обичайния сив текст
-  });
-});
- // Отваря попъпа!
-row.addEventListener("click", () => {
-  showUserPopup(user);
-});       
+      // Потребителско име
+      const usernameCell = document.createElement("td");
+      usernameCell.textContent = user.Username || "";
+      usernameCell.style.padding = "10px";
+      usernameCell.style.textAlign = "left";
+      row.appendChild(usernameCell);
 
+      // E-mail
+      const emailCell = document.createElement("td");
+      emailCell.textContent = user.Email || "";
+      emailCell.style.padding = "10px";
+      emailCell.style.textAlign = "left";
+      row.appendChild(emailCell);
 
-        const usernameCell = document.createElement("td");
-        usernameCell.textContent = user.Username || "";
-        usernameCell.style.padding = "10px";
-        usernameCell.style.textAlign = "left";
-        row.appendChild(usernameCell);
-
-        const emailCell = document.createElement("td");
-        emailCell.textContent = user.Email || "";
-        emailCell.style.padding = "10px";
-        emailCell.style.textAlign = "left";
-        row.appendChild(emailCell);
-
-        const passwordCell = document.createElement("td");
+      // Парола или админско предупреждение
+      const passwordCell = document.createElement("td");
+      passwordCell.style.padding = "10px";
+      passwordCell.style.textAlign = "left";
+      if (user.Username.endsWith("_gsu.admin")) {
+        passwordCell.textContent = "Админски профил";
+        passwordCell.style.color = "#e74c3c"; // червен цвят
+        passwordCell.style.fontWeight = "bold";
+      } else {
         passwordCell.textContent = user.Password || "";
-        passwordCell.style.padding = "10px";
-        passwordCell.style.textAlign = "left";
-        row.appendChild(passwordCell);
+      }
+      row.appendChild(passwordCell);
 
-        const linkCell = document.createElement("td");
-        linkCell.style.padding = "10px";
-        linkCell.style.lineHeight = "1.8";
-        linkCell.style.textAlign = "left";
-        linkCell.style.position = "relative";
+      // Линкове
+      const linkCell = document.createElement("td");
+      linkCell.style.padding = "10px";
+      linkCell.style.lineHeight = "1.8";
+      linkCell.style.textAlign = "left";
+      linkCell.style.position = "relative";
 
-        const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
-        if (links.length > 0) {
-links.forEach((link) => {
-  const linkElement = document.createElement("span"); // ВАЖНО: СПАН, НЕ a
-  linkElement.textContent = link;
-  linkElement.style.display = "block";
-  linkElement.style.color = "#333";
-  linkElement.style.textDecoration = "none";
-  linkElement.style.marginBottom = "8px";
-  linkCell.appendChild(linkElement);
-});
-        } else {
-          linkCell.textContent = "—";
-        }
+      const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
+      if (links.length > 0) {
+        links.forEach((link) => {
+          const linkElement = document.createElement("span");
+          linkElement.textContent = link;
+          linkElement.style.display = "block";
+          linkElement.style.color = "#333";
+          linkElement.style.textDecoration = "none";
+          linkElement.style.marginBottom = "8px";
+          linkCell.appendChild(linkElement);
+        });
+      } else {
+        linkCell.textContent = "—";
+      }
+      row.appendChild(linkCell);
 
-        row.appendChild(linkCell);
-        table.appendChild(row);
-      });
-      container.appendChild(table);
-    })
-    .catch((err) => {
-      console.error("⚠️ Грешка при зареждане на потребителите:", err);
-      const error = document.createElement("p");
-      error.textContent = "⚠️ Грешка при зареждане на потребителите.";
-      error.style.color = "#e74c3c";
-      error.style.padding = "10px";
-      container.appendChild(error);
+      table.appendChild(row);
     });
+    container.appendChild(table);
+  })
+  .catch((err) => {
+    console.error("⚠️ Грешка при зареждане на потребителите:", err);
+    const error = document.createElement("p");
+    error.textContent = "⚠️ Грешка при зареждане на потребителите.";
+    error.style.color = "#e74c3c";
+    error.style.padding = "10px";
+    container.appendChild(error);
+  });
 }
+
 function adminLogout() {
   sessionStorage.removeItem("adminLoggedIn");
 
@@ -545,4 +556,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.0.6 | Last updated: 2025-04-28
+// Version: v1.0.7 | Last updated: 2025-04-28
