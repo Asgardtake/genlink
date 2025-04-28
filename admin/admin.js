@@ -192,15 +192,29 @@ function loadUsers() {
         row.appendChild(usernameCell);
 
         if (user.Username.endsWith("_gsu.admin")) {
-          const adminInfoCell = document.createElement("td");
-          adminInfoCell.textContent = "Админски профил";
-          adminInfoCell.colSpan = 3;
-          adminInfoCell.style.color = "#e74c3c";
-          adminInfoCell.style.fontSize = "14px";
-          adminInfoCell.style.fontWeight = "normal";
-          adminInfoCell.style.padding = "10px";
-          adminInfoCell.style.textAlign = "left";
-          row.appendChild(adminInfoCell);
+const adminInfoCell = document.createElement("td");
+adminInfoCell.textContent = "Админски профил";
+adminInfoCell.style.color = "#e74c3c";
+adminInfoCell.style.fontSize = "14px";
+adminInfoCell.style.fontWeight = "normal";
+adminInfoCell.style.padding = "10px";
+adminInfoCell.style.textAlign = "left";
+
+const emptyCell1 = document.createElement("td");
+emptyCell1.textContent = "—";
+emptyCell1.style.padding = "10px";
+emptyCell1.style.textAlign = "left";
+
+const emptyCell2 = document.createElement("td");
+emptyCell2.textContent = "—";
+emptyCell2.style.padding = "10px";
+emptyCell2.style.textAlign = "left";
+
+// Добавяме всичките 3 клетки
+row.appendChild(adminInfoCell);
+row.appendChild(emptyCell1);
+row.appendChild(emptyCell2);
+
 
           const adminCells = row.querySelectorAll("td");
           if (adminCells.length > 0) {
