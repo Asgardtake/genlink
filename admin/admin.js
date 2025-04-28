@@ -130,16 +130,24 @@ function loadUsers() {
         row.style.transition = "background 0.2s ease";
         row.style.cursor = "pointer";
 
-        row.addEventListener("mouseenter", () => {
-          row.style.backgroundColor = "#f5f5f5";
-        });
-        row.addEventListener("mouseleave", () => {
-          row.style.backgroundColor = "transparent";
-        });
+row.addEventListener("mouseenter", () => {
+  row.style.backgroundColor = "#29ca8e"; // сив фон
 
-        row.addEventListener("click", () => {
-          showUserPopup(user);
-        });
+  // При ховър сменяме цвета на текстовете в реда
+  row.querySelectorAll("td, span").forEach((el) => {
+    el.style.color = "#fff"; // например зелено
+  });
+});
+
+row.addEventListener("mouseleave", () => {
+  row.style.backgroundColor = "transparent"; // връщаме фона
+
+  // Връщаме оригиналния цвят на текстовете
+  row.querySelectorAll("td, span").forEach((el) => {
+    el.style.color = "#333"; // връщаме обичайния сив текст
+  });
+});
+
 
         const usernameCell = document.createElement("td");
         usernameCell.textContent = user.Username || "";
