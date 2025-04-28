@@ -203,6 +203,14 @@ usernameCell.style.transition = "all 0.3s ease";
     adminInfoCell.style.padding = "10px";
     adminInfoCell.style.textAlign = "left";
     row.appendChild(adminInfoCell);
+      const adminCells = row.querySelectorAll("td");
+  if (adminCells.length > 0) {
+    adminCells[0].style.borderTopLeftRadius = "10px";
+    adminCells[0].style.borderBottomLeftRadius = "10px";
+    adminCells[adminCells.length - 1].style.borderTopRightRadius = "10px";
+    adminCells[adminCells.length - 1].style.borderBottomRightRadius = "10px";
+  }
+}
   } else {
     // E-mail
 const emailCell = document.createElement("td");
