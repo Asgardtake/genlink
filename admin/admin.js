@@ -147,6 +147,10 @@ row.addEventListener("mouseleave", () => {
     el.style.color = "#333"; // връщаме обичайния сив текст
   });
 });
+ // Отваря попъпа!
+row.addEventListener("click", () => {
+  showUserPopup(user);
+});       
 
 
         const usernameCell = document.createElement("td");
