@@ -128,30 +128,44 @@ function loadUsers() {
   });
   table.appendChild(headerRow);
 
-  fetch(`${window.location.origin}/api/users`)
-    .then((response) => response.json())
-    .then((users) => {
-      users.forEach((user) => {
-        const row = document.createElement("tr");
-        row.style.transition = "background 0.2s ease";
-        row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
+fetch(`${window.location.origin}/api/users`)
+  .then((response) => response.json())
+  .then((users) => {
+    users.forEach((user) => {
+      const row = document.createElement("tr");
+      row.style.transition = "background 0.2s ease";
+      row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
 
-        if (user.Username.endsWith("_gsu.admin")) {
-          row.style.backgroundColor = "#ffecec";
-        } else {
-          row.addEventListener("mouseenter", () => {
-            const cells = row.querySelectorAll("td");
-            if (cells.length > 0) {
-              cells[0].style.borderTopLeftRadius = "10px";
-              cells[0].style.borderBottomLeftRadius = "10px";
-              cells[cells.length - 1].style.borderTopRightRadius = "10px";
-              cells[cells.length - 1].style.borderBottomRightRadius = "10px";
-              cells.forEach(cell => {
-                cell.style.backgroundColor = "#29ca8e";
-                cell.style.color = "#fff";
-              });
-            }
-          });
+      if (user.Username.endsWith("_gsu.admin")) {
+        row.style.backgroundColor = "#ffecec";
+
+        // ЗАОБЛЯНЕ НА ЪГЛИТЕ ЗА АДМИНСКИЯ РЕД
+        const adminCells = row.querySelectorAll("td");
+        adminCells.forEach((cell) => {
+          cell.style.backgroundColor = "#ffecec"; // Задаваме същия фон за всяка клетка
+          cell.style.transition = "all 0.3s ease"; // Плавна анимация
+        });
+
+        if (adminCells.length > 0) {
+          adminCells[0].style.borderTopLeftRadius = "10px";
+          adminCells[0].style.borderBottomLeftRadius = "10px";
+          adminCells[adminCells.length - 1].style.borderTopRightRadius = "10px";
+          adminCells[adminCells.length - 1].style.borderBottomRightRadius = "10px";
+        }
+      } else {
+        row.addEventListener("mouseenter", () => {
+          const cells = row.querySelectorAll("td");
+          if (cells.length > 0) {
+            cells[0].style.borderTopLeftRadius = "10px";
+            cells[0].style.borderBottomLeftRadius = "10px";
+            cells[cells.length - 1].style.borderTopRightRadius = "10px";
+            cells[cells.length - 1].style.borderBottomRightRadius = "10px";
+            cells.forEach(cell => {
+              cell.style.backgroundColor = "#29ca8e";
+              cell.style.color = "#fff";
+            });
+          }
+        });
 
           row.addEventListener("mouseleave", () => {
             const cells = row.querySelectorAll("td");
