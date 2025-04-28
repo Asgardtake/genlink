@@ -2,13 +2,13 @@
 function createAdminLoginPopup() {
   const modal = document.createElement("div");
   modal.id = "adminUserPopup";
-  modal.style.cssText = `
+  modal.style.cssText = 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: #000000cc; display: flex; align-items: center; justify-content: center;
     z-index: 9999;
-  `;
+  ;
 
-  modal.innerHTML = `
+  modal.innerHTML = 
     <div style="width: 320px; background: #fff; padding: 20px; border-radius: 8px; position: relative;">
       <h3 style="margin-top:0">Genlink Администратор</h3>
       <input id="adminUsername" type="text" placeholder="Потребителско име" style="width:100%; padding:8px; margin:10px 0;">
@@ -16,7 +16,7 @@ function createAdminLoginPopup() {
       <div id="adminLoginError" style="color:red; font-size:14px; margin-bottom:8px;"></div>
       <button id="adminLoginButton" style="width:100%; background:#29ca8e; color:#fff; border:none; padding:10px;">Вход</button>
     </div>
-  `;
+  ;
 
   document.body.appendChild(modal);
 
@@ -47,7 +47,7 @@ function createAdminLoginPopup() {
     }
 
     // Валидация за password
-const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/'`;~]+$/;
+const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/';~]+$/;
 
     if (!passwordRegex.test(password)) {
       errorDiv.textContent = "Паролата съдържа неразрешени символи.";
@@ -127,7 +127,7 @@ function loadUsers() {
   });
   table.appendChild(headerRow);
 
-  fetch(`${window.location.origin}/api/users`)
+  fetch(${window.location.origin}/api/users)
     .then((response) => response.json())
     .then((users) => {
       users.forEach((user) => {
@@ -229,25 +229,25 @@ function adminLogout() {
   function showUserPopup(user) {
     const modal = document.createElement("div");
     modal.id = "userPopupModal"; //Даваме ID
-    modal.style.cssText = `
+    modal.style.cssText = 
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: #000000cc; display: flex; align-items: center; justify-content: center;
       z-index: 9999;
-    `;
+    ;
   
     const content = document.createElement("div");
-    content.style.cssText = `
+    content.style.cssText = 
       background: white; padding: 24px; border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-family: sans-serif;
       display: inline-block;
-    `;
+    ;
   
     const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
     const linkInputs = links.length > 0
-      ? links.map((link, i) => `<input type="text" value="${link}" style="width:100%; padding:8px; margin-bottom: 10px;" placeholder="Линк ${i + 1}">`).join("")
-      : `<p style="color:#888; font-size:14px;">Няма запазени линкове</p>`;
+      ? links.map((link, i) => <input type="text" value="${link}" style="width:100%; padding:8px; margin-bottom: 10px;" placeholder="Линк ${i + 1}">).join("")
+      : <p style="color:#888; font-size:14px;">Няма запазени линкове</p>;
   
-    content.innerHTML = `
+    content.innerHTML = 
   <h3 style="margin-top:0; margin-bottom: 16px;">Информация за <span style="color:#29ca8e;">${user.Username || "потребителя"}</span></h3>
   <p style="font-size:12px; font-weight:regular; color:#999; margin-bottom: 16px; line-height: 1.8;">
     <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;">
@@ -293,7 +293,7 @@ function adminLogout() {
       <button id="cancelUserPopupBtn" style="padding:8px 16px; background:#e74c3c; color:white; border:none; border-radius:4px;">Отмяна</button>
     </div>
   </div>
-  `;
+  ;
   
     modal.appendChild(content);
     document.body.appendChild(modal);
@@ -352,7 +352,7 @@ function adminLogout() {
   function validatePopupPassword() {
     const value = popupPassword.value.trim();
     if (!value) return false;
-    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/'`;~]+$/.test(value) && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/'`;~]/.test(value) && value.length >= 6;
+    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value) && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]/.test(value) && value.length >= 6;
     if (!valid) {
       passwordError.textContent = "Грешно въведена парола";
       return false;
@@ -398,19 +398,56 @@ function adminLogout() {
     const validPass = validatePopupPassword();
     if (!validUser || !validEmail || !validPass) return;
 
-    alert("Всички полета са валидни. Може да се добави fetch() тук за update.");
+    fetch("/api/update-user", {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    oldUsername: user.Username, // старото потребителско име (за да знаем кой е бил)
+    newUsername: usernameVal,
+    newEmail: emailVal,
+    newPassword: passVal
+  }),
+})
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error(HTTP статус: ${res.status});
+    }
+    return res.json();
+  })
+.then((data) => {
+  if (data.success) {
+    showAlertModal("✅ Успешно запазихте промените.");
+    modal.remove();
+    loadUsers();
+  } else {
+    // Ако получим съобщение от сървъра (например username/email съществува)
+    globalError.textContent = "❌ " + (data.message || "Неуспешно запазване.");
+  }
+})
+.catch((err) => {
+  if (err.message && err.message.includes("409")) {
+    globalError.textContent = "❌ Потребителско име или имейл вече съществуват.";
+  } else {
+    console.error("⚠️ Грешка при update:", err);
+    globalError.textContent = "⚠️ Възникна грешка при връзка със сървъра.";
+  }
+});
+
+
   });
 
 
   const deleteBtn = content.querySelector("#deleteUserBtn");
   deleteBtn.addEventListener("click", () => {
-    showConfirmModal(`Наистина ли искаш да изтриеш акаунта на "${user.Username}"?`, () => {
-      fetch(`/api/delete-user/${encodeURIComponent(user.Username)}`, {
+    showConfirmModal(Наистина ли искаш да изтриеш акаунта на "${user.Username}"?, () => {
+      fetch(/api/delete-user/${encodeURIComponent(user.Username)}, {
         method: "DELETE"
       })
         .then(res => {
           if (!res.ok) {
-            throw new Error(`HTTP статус: ${res.status}`);
+            throw new Error(HTTP статус: ${res.status});
           }
           return res.json();
         })
@@ -442,26 +479,26 @@ function adminLogout() {
 }
 function showConfirmModal(message, onConfirm) {
   const overlay = document.createElement("div");
-  overlay.style.cssText = `
+  overlay.style.cssText = 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
     z-index: 10000;
-  `;
+  ;
 
   const box = document.createElement("div");
-  box.style.cssText = `
+  box.style.cssText = 
     background: white; padding: 20px; border-radius: 6px;
     width: 320px; text-align: center; font-family: sans-serif;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  `;
+  ;
 
-  box.innerHTML = `
+  box.innerHTML = 
     <p style="margin-bottom: 20px; color: #333;">${message}</p>
     <div style="display: flex; justify-content: center; gap: 10px;">
       <button id="confirmYes" style="padding: 8px 16px; background: #29ca8e; color: white; border: none; border-radius: 4px;">OK</button>
       <button id="confirmNo" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 4px;">Cancel</button>
     </div>
-  `;
+  ;
 
   overlay.appendChild(box);
   document.body.appendChild(overlay);
@@ -478,23 +515,23 @@ function showConfirmModal(message, onConfirm) {
 
 function showAlertModal(message) {
   const overlay = document.createElement("div");
-  overlay.style.cssText = `
+  overlay.style.cssText = 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
     z-index: 10000;
-  `;
+  ;
 
   const box = document.createElement("div");
-  box.style.cssText = `
+  box.style.cssText = 
     background: white; padding: 20px; border-radius: 6px;
     width: 320px; text-align: center; font-family: sans-serif;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  `;
+  ;
 
-  box.innerHTML = `
+  box.innerHTML = 
     <p style="margin-bottom: 20px; color: #333;">${message}</p>
     <button style="padding: 8px 16px; background: #29ca8e; color: white; border: none; border-radius: 4px;">OK</button>
-  `;
+  ;
 
   overlay.appendChild(box);
   document.body.appendChild(overlay);
