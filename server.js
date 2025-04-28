@@ -256,6 +256,40 @@ app.delete('/api/delete-user/:username', (req, res) => {
   });
 });
 
+// Обновяване на потребител от админ панела
+app.put('/api/update-user', (req, res) => {
+  const { oldUsername, newUsername, newEmail, newPassword } = req.body;
+
+  if (!oldUsername || !newUsername || !newEmail || !newPassword) {
+    return res.status(400).json({ success: false, message: 'Липсват данни за обновяване.' });
+  }
+
+  // Проверка дали новото потребителско име или новият имейл вече съществуват за друг потребител
+  const checkQuery = 'SELECT * FROM users WHERE (Username = ? OR Email = ?) AND Username != ?';
+  db.query(checkQuery, [newUsername, newEmail, oldUsername], (err, results) => {
+    if (err) {
+      console.error('❌ Грешка при проверка на съществуващи данни:', err);
+      return res.status(500).json({ success: false, message: 'Database error (check)' });
+    }
+
+    if (results.length > 0) {
+      return res.status(409).json({ success: false, message: 'Потребителско име или имейл вече съществуват.' });
+    }
+
+    // Ако няма конфликт – правим обновяване
+    const updateQuery = 'UPDATE users SET Username = ?, Email = ?, Password = ? WHERE Username = ?';
+    db.query(updateQuery, [newUsername, newEmail, newPassword, oldUsername], (err2, result) => {
+      if (err2) {
+        console.error('❌ Грешка при обновяване на потребител:', err2);
+        return res.status(500).json({ success: false, message: 'Database error (update)' });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: 'Потребителят не е намерен.' });
+      }
+      res.json({ success: true, message: 'Потребителят е обновен успешно.' });
+    });
+  });
+});
 
 
 console.log("rebuild")
@@ -293,7 +327,7 @@ app.get('/api/users', (req, res) => {
 
 
 // API маршрут за версия на backend-а
-const APP_VERSION = 'v1.0.2'; // сменяй ръчно при промени
+const APP_VERSION = 'v1.0.4'; // сменяй ръчно при промени
 
 app.get('/api/version', (req, res) => {
   res.json({ version: APP_VERSION });

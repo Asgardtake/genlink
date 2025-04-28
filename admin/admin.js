@@ -8,7 +8,7 @@ function createAdminLoginPopup() {
     z-index: 9999;
   `;
 
-  modal.innerHTML = `
+  modal.innerHTML = ` 
     <div style="width: 320px; background: #fff; padding: 20px; border-radius: 8px; position: relative;">
       <h3 style="margin-top:0">Genlink Администратор</h3>
       <input id="adminUsername" type="text" placeholder="Потребителско име" style="width:100%; padding:8px; margin:10px 0;">
@@ -47,7 +47,7 @@ function createAdminLoginPopup() {
     }
 
     // Валидация за password
-const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/'`;~]+$/;
+const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/';~]+$/;
 
     if (!passwordRegex.test(password)) {
       errorDiv.textContent = "Паролата съдържа неразрешени символи.";
@@ -243,9 +243,10 @@ function adminLogout() {
     `;
   
     const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
-    const linkInputs = links.length > 0
-      ? links.map((link, i) => `<input type="text" value="${link}" style="width:100%; padding:8px; margin-bottom: 10px;" placeholder="Линк ${i + 1}">`).join("")
-      : `<p style="color:#888; font-size:14px;">Няма запазени линкове</p>`;
+const linkInputs = links.length > 0
+  ? links.map((link, i) => `<input type="text" value="${link}" style="width:100%; padding:8px; margin-bottom: 10px;" placeholder="Линк ${i + 1}">`).join("")
+  : `<p style="color:#888; font-size:14px;">Няма запазени линкове</p>`;
+
   
     content.innerHTML = `
   <h3 style="margin-top:0; margin-bottom: 16px;">Информация за <span style="color:#29ca8e;">${user.Username || "потребителя"}</span></h3>
@@ -352,7 +353,12 @@ function adminLogout() {
   function validatePopupPassword() {
     const value = popupPassword.value.trim();
     if (!value) return false;
-    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/'`;~]+$/.test(value) && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/'`;~]/.test(value) && value.length >= 6;
+    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value)
+            && /[A-Z]/.test(value)
+            && /[0-9]/.test(value)
+            && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]/.test(value)
+            && value.length >= 6;
+
     if (!valid) {
       passwordError.textContent = "Грешно въведена парола";
       return false;
@@ -398,9 +404,43 @@ function adminLogout() {
     const validPass = validatePopupPassword();
     if (!validUser || !validEmail || !validPass) return;
 
-    alert("Всички полета са валидни. Може да се добави fetch() тук за update.");
+    fetch("/api/update-user", {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    oldUsername: user.Username, // старото потребителско име (за да знаем кой е бил)
+    newUsername: usernameVal,
+    newEmail: emailVal,
+    newPassword: passVal
+  }),
+})
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error(`HTTP статус: ${res.status}`);
+    }
+    return res.json();
+  })
+.then((data) => {
+  if (data.success) {
+    showAlertModal("✅ Успешно запазихте промените.");
+    modal.remove();
+    loadUsers();
+  } else {
+    // Ако получим съобщение от сървъра (например username/email съществува)
+    globalError.textContent = "❌ " + (data.message || "Неуспешно запазване.");
+  }
+})
+.catch((err) => {
+  if (err.message && err.message.includes("409")) {
+    globalError.textContent = "❌ Потребителско име или имейл вече съществуват.";
+  } else {
+    console.error("⚠️ Грешка при update:", err);
+    globalError.textContent = "⚠️ Възникна грешка при връзка със сървъра.";
+  }
+});
   });
-
 
   const deleteBtn = content.querySelector("#deleteUserBtn");
   deleteBtn.addEventListener("click", () => {
@@ -504,4 +544,5 @@ function showAlertModal(message) {
   });
 }
 
-// Version: v1.0.4 | Last updated: 2025-04-28
+
+// Version: v1.0.6 | Last updated: 2025-04-28
