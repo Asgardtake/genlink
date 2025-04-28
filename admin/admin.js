@@ -93,6 +93,11 @@ const passwordRegex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/'`;~]+$/;
   });
 }
 document.addEventListener("DOMContentLoaded", () => {
+  const greetingBlock = document.getElementById("adminGreeting");
+if (sessionStorage.getItem("adminLoggedIn") !== "true" && greetingBlock) {
+  greetingBlock.style.display = "none";
+}
+
   if (sessionStorage.getItem("adminLoggedIn") !== "true") {
     createAdminLoginPopup();
   } else {
@@ -215,7 +220,7 @@ function adminLogout() {
 
   // Скриваме поздравителния текст
   const greetingBlock = document.getElementById("adminGreeting");
-  if (greetingBlock) greetingBlock.style.display = "none";
+  if (greetingBlock) greetingBlock.remove();
 
   // Показваме попъпа за логин
   createAdminLoginPopup();
@@ -499,4 +504,4 @@ function showAlertModal(message) {
   });
 }
 
-// Version: v1.0.2 | Last updated: 2025-04-28
+// Version: v1.0.4 | Last updated: 2025-04-28
