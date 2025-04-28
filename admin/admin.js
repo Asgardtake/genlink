@@ -209,43 +209,6 @@ function adminLogout() {
   // Показваме попъпа за логин
   createAdminLoginPopup();
 }
-function showUserPopup(user) {
-  const modal = document.createElement("div");
-  modal.id = "userPopupModal";
-  modal.style.cssText = `
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #000000cc; display: flex; align-items: center; justify-content: center;
-    z-index: 9999;
-  `;
-
-  const content = document.createElement("div");
-  content.style.cssText = `
-    background: white; padding: 24px; border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-family: sans-serif;
-    display: inline-block;
-    max-width: 400px;
-    width: 90%;
-  `;
-
-  content.innerHTML = `
-    <h3 style="margin-top:0; margin-bottom:16px;">Потребител: <span style="color:#29ca8e;">${user.Username || "-"}</span></h3>
-    <p style="margin:8px 0;"><strong>Email:</strong> ${user.Email || "-"}</p>
-    <p style="margin:8px 0;"><strong>Парола:</strong> ${user.Password || "-"}</p>
-    ${user.Link1 ? `<a href="${user.Link1}" target="_blank" style="display:block; margin:8px 0;">${user.Link1}</a>` : ""}
-    ${user.Link2 ? `<a href="${user.Link2}" target="_blank" style="display:block; margin:8px 0;">${user.Link2}</a>` : ""}
-    ${user.Link3 ? `<a href="${user.Link3}" target="_blank" style="display:block; margin:8px 0;">${user.Link3}</a>` : ""}
-    <div style="margin-top:20px; text-align:center;">
-      <button id="closeUserPopupBtn" style="padding:8px 16px; background:#e74c3c; color:white; border:none; border-radius:4px;">Затвори</button>
-    </div>
-  `;
-
-  modal.appendChild(content);
-  document.body.appendChild(modal);
-
-  document.getElementById("closeUserPopupBtn").addEventListener("click", () => {
-    modal.remove();
-  });
-}
 // Попъп за всеки ред
   function showUserPopup(user) {
     const modal = document.createElement("div");
