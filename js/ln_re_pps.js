@@ -1441,6 +1441,7 @@ fetch('/api/check-session', {
   .catch(err => console.error("Грешка при check-session:", err));
 });
 
-  // ------------------------------
-  // Логнат потрбител - dropdown logic
-  // ------------------------------
+// Version: v1.0.2 | Last updated: 2025-04-28
+const APP_VERSION = 'v1.0.2';
+console.log(`Genlink Admin Panel - Version: ${APP_VERSION}`);
+
