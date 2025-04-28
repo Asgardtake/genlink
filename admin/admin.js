@@ -42,7 +42,7 @@ function createAdminLoginPopup() {
       return;
     }
     if (!username.endsWith("_gsu.admin")) {
-      errorDiv.textContent = "Потребителското име трябва да завършва на '_gsu.admin'.";
+      errorDiv.textContent = "Грешно потрбителско име!";
       return;
     }
 
