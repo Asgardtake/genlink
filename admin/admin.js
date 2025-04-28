@@ -91,3 +91,8 @@ function createAdminLoginPopup() {
       });
   });
 }
+document.addEventListener("DOMContentLoaded", () => {
+  if (sessionStorage.getItem("adminLoggedIn") !== "true") {
+    createAdminLoginPopup();
+  }
+});
