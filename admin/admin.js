@@ -108,10 +108,12 @@ function loadUsers() {
   const container = document.querySelector(".col-md-4.col-sm-4[style*='width:100%']");
   container.innerHTML = ""; // Изчистваме всичко
 
-  const table = document.createElement("table");
-  table.style.width = "100%";
-  table.style.borderCollapse = "collapse";
-  table.style.marginTop = "20px";
+const table = document.createElement("table");
+table.style.width = "100%";
+table.style.marginTop = "20px";
+table.style.borderCollapse = "separate";
+table.style.borderSpacing = "0";
+
 
   const headerRow = document.createElement("tr");
   const headers = ["Потребителско име", "E-mail", "Парола", "GenLink"];
@@ -138,8 +140,8 @@ users.forEach((user) => {
   if (user.Username.endsWith("_gsu.admin")) {
     row.style.backgroundColor = "#ffecec";
   }
-
   if (!user.Username.endsWith("_gsu.admin")) {
+    
 row.addEventListener("mouseenter", () => {
   const cells = row.querySelectorAll("td");
   if (cells.length > 0) {
@@ -147,11 +149,12 @@ row.addEventListener("mouseenter", () => {
     cells[0].style.borderBottomLeftRadius = "10px";
     cells[cells.length - 1].style.borderTopRightRadius = "10px";
     cells[cells.length - 1].style.borderBottomRightRadius = "10px";
+    cells.forEach(cell => {
+      cell.style.backgroundColor = "#29ca8e";
+      cell.style.color = "#fff";
+    });
   }
-  row.style.backgroundColor = "#29ca8e";
-  row.querySelectorAll("td, span").forEach((el) => el.style.color = "#fff");
 });
-
 
 row.addEventListener("mouseleave", () => {
   const cells = row.querySelectorAll("td");
@@ -160,12 +163,12 @@ row.addEventListener("mouseleave", () => {
     cells[0].style.borderBottomLeftRadius = "0";
     cells[cells.length - 1].style.borderTopRightRadius = "0";
     cells[cells.length - 1].style.borderBottomRightRadius = "0";
+    cells.forEach(cell => {
+      cell.style.backgroundColor = "transparent";
+      cell.style.color = "#333";
+    });
   }
-  row.style.backgroundColor = "transparent";
-  row.querySelectorAll("td, span").forEach((el) => el.style.color = "#333");
 });
-
-
     row.addEventListener("click", () => {
       showUserPopup(user);
     });
@@ -173,6 +176,8 @@ row.addEventListener("mouseleave", () => {
 
   // Потребителско име – ВИНАГИ ВИДИМО
   const usernameCell = document.createElement("td");
+  usernameCell.style.backgroundColor = "transparent";
+usernameCell.style.transition = "all 0.3s ease";
   if (user.Username.endsWith("_gsu.admin")) {
   const fullUsername = user.Username;
   const maskedUsername = 
@@ -200,24 +205,30 @@ row.addEventListener("mouseleave", () => {
     row.appendChild(adminInfoCell);
   } else {
     // E-mail
-    const emailCell = document.createElement("td");
-    emailCell.textContent = user.Email || "";
-    emailCell.style.padding = "10px";
-    emailCell.style.textAlign = "left";
-    row.appendChild(emailCell);
+const emailCell = document.createElement("td");
+emailCell.style.backgroundColor = "transparent"; 
+emailCell.style.transition = "all 0.3s ease";   
+emailCell.textContent = user.Email || "";
+emailCell.style.padding = "10px";
+emailCell.style.textAlign = "left";
+row.appendChild(emailCell);
 
     // Парола
-    const passwordCell = document.createElement("td");
-    passwordCell.textContent = user.Password || "";
-    passwordCell.style.padding = "10px";
-    passwordCell.style.textAlign = "left";
-    row.appendChild(passwordCell);
+const passwordCell = document.createElement("td");
+passwordCell.style.backgroundColor = "transparent"; 
+passwordCell.style.transition = "all 0.3s ease";     
+passwordCell.textContent = user.Password || "";
+passwordCell.style.padding = "10px";
+passwordCell.style.textAlign = "left";
+row.appendChild(passwordCell);
 
     // Линкове
-    const linkCell = document.createElement("td");
-    linkCell.style.padding = "10px";
-    linkCell.style.lineHeight = "1.8";
-    linkCell.style.textAlign = "left";
+const linkCell = document.createElement("td");
+linkCell.style.backgroundColor = "transparent";  // <-- правилно
+linkCell.style.transition = "all 0.3s ease";      // <-- правилно
+linkCell.style.padding = "10px";
+linkCell.style.lineHeight = "1.8";
+linkCell.style.textAlign = "left";
 
     const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
     if (links.length > 0) {
@@ -584,4 +595,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.0.9 | Last updated: 2025-04-28
+// Version: v1.1.0 | Last updated: 2025-04-28
