@@ -243,11 +243,12 @@ function adminLogout() {
     `;
   
     const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
-    const linkInputs = links.length > 0
-      ? links.map((link, i) => `<input type="text" value="${link}" style="width:100%; padding:8px; margin-bottom: 10px;" placeholder="Линк ${i + 1}">`).join("")
-      : <p style="color:#888; font-size:14px;">Няма запазени линкове</p>;
+const linkInputs = links.length > 0
+  ? links.map((link, i) => `<input type="text" value="${link}" style="width:100%; padding:8px; margin-bottom: 10px;" placeholder="Линк ${i + 1}">`).join("")
+  : `<p style="color:#888; font-size:14px;">Няма запазени линкове</p>`;
+
   
-    content.innerHTML = 
+    content.innerHTML = `
   <h3 style="margin-top:0; margin-bottom: 16px;">Информация за <span style="color:#29ca8e;">${user.Username || "потребителя"}</span></h3>
   <p style="font-size:12px; font-weight:regular; color:#999; margin-bottom: 16px; line-height: 1.8;">
     <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;">
@@ -293,7 +294,7 @@ function adminLogout() {
       <button id="cancelUserPopupBtn" style="padding:8px 16px; background:#e74c3c; color:white; border:none; border-radius:4px;">Отмяна</button>
     </div>
   </div>
-  ;
+  `;
   
     modal.appendChild(content);
     document.body.appendChild(modal);
@@ -352,7 +353,12 @@ function adminLogout() {
   function validatePopupPassword() {
     const value = popupPassword.value.trim();
     if (!value) return false;
-    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value) && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]/.test(value) && value.length >= 6;
+    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value)
+            && /[A-Z]/.test(value)
+            && /[0-9]/.test(value)
+            && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]/.test(value)
+            && value.length >= 6;
+
     if (!valid) {
       passwordError.textContent = "Грешно въведена парола";
       return false;
@@ -434,14 +440,11 @@ function adminLogout() {
     globalError.textContent = "⚠️ Възникна грешка при връзка със сървъра.";
   }
 });
-
-
   });
-
 
   const deleteBtn = content.querySelector("#deleteUserBtn");
   deleteBtn.addEventListener("click", () => {
-    showConfirmModal(Наистина ли искаш да изтриеш акаунта на "${user.Username}"?, () => {
+    showConfirmModal(`Наистина ли искаш да изтриеш акаунта на "${user.Username}"?`, () => {
       fetch(`/api/delete-user/${encodeURIComponent(user.Username)}`, {
         method: "DELETE"
       })
@@ -542,4 +545,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.0.5 | Last updated: 2025-04-28
+// Version: v1.0.6 | Last updated: 2025-04-28
