@@ -166,20 +166,13 @@ fetch(`${window.location.origin}/api/users`)
             });
           }
         });
+      }
+    });
+  })
+  .catch((err) => {
+    console.error("⚠️ Грешка при зареждане на потребителите:", err);
+  });
 
-          row.addEventListener("mouseleave", () => {
-            const cells = row.querySelectorAll("td");
-            if (cells.length > 0) {
-              cells[0].style.borderTopLeftRadius = "0";
-              cells[0].style.borderBottomLeftRadius = "0";
-              cells[cells.length - 1].style.borderTopRightRadius = "0";
-              cells[cells.length - 1].style.borderBottomRightRadius = "0";
-              cells.forEach(cell => {
-                cell.style.backgroundColor = "transparent";
-                cell.style.color = "#333";
-              });
-            }
-          });
 
           row.addEventListener("click", () => {
             showUserPopup(user);
