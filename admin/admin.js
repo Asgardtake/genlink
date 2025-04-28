@@ -195,4 +195,18 @@ function loadUsers() {
       container.appendChild(error);
     });
 }
+function adminLogout() {
+  sessionStorage.removeItem("adminLoggedIn");
+
+  // Скриваме секцията с таблицата
+  const container = document.querySelector(".col-md-4.col-sm-4[style*='width:100%']");
+  if (container) container.innerHTML = "";
+
+  // Скриваме поздравителния текст
+  const greetingBlock = document.getElementById("adminGreeting");
+  if (greetingBlock) greetingBlock.style.display = "none";
+
+  // Показваме попъпа за логин
+  createAdminLoginPopup();
+}
 
