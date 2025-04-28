@@ -42,7 +42,7 @@ function createAdminLoginPopup() {
       return;
     }
     if (!username.endsWith("_gsu.admin")) {
-      errorDiv.textContent = "Грешно потрбителско име!";
+      errorDiv.textContent = "Грешно потребителско име!";
       return;
     }
 
@@ -231,12 +231,12 @@ passwordCell.style.textAlign = "left";
 row.appendChild(passwordCell);
 
     // Линкове
-const linkCell = document.createElement("td");
-linkCell.style.backgroundColor = "transparent";  // <-- правилно
-linkCell.style.transition = "all 0.3s ease";      // <-- правилно
-linkCell.style.padding = "10px";
-linkCell.style.lineHeight = "1.8";
-linkCell.style.textAlign = "left";
+    const linkCell = document.createElement("td");
+    linkCell.style.backgroundColor = "transparent";  
+    linkCell.style.transition = "all 0.3s ease";      
+    linkCell.style.padding = "10px";
+    linkCell.style.lineHeight = "1.8";
+    linkCell.style.textAlign = "left";
 
     const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
     if (links.length > 0) {
@@ -252,22 +252,23 @@ linkCell.style.textAlign = "left";
       linkCell.textContent = "—";
     }
     row.appendChild(linkCell);
-  }
+  } 
 
   table.appendChild(row);
-});
+}); 
 
-    container.appendChild(table);
-  })
-  .catch((err) => {
-    console.error("⚠️ Грешка при зареждане на потребителите:", err);
-    const error = document.createElement("p");
-    error.textContent = "⚠️ Грешка при зареждане на потребителите.";
-    error.style.color = "#e74c3c";
-    error.style.padding = "10px";
-    container.appendChild(error);
-  });
-}
+container.appendChild(table);
+}) 
+.catch((err) => {
+  console.error("⚠️ Грешка при зареждане на потребителите:", err);
+  const error = document.createElement("p");
+  error.textContent = "⚠️ Грешка при зареждане на потребителите.";
+  error.style.color = "#e74c3c";
+  error.style.padding = "10px";
+  container.appendChild(error);
+});
+} 
+
 
 function adminLogout() {
   sessionStorage.removeItem("adminLoggedIn");
