@@ -108,12 +108,11 @@ function loadUsers() {
   const container = document.querySelector(".col-md-4.col-sm-4[style*='width:100%']");
   container.innerHTML = ""; // Изчистваме всичко
 
-const table = document.createElement("table");
-table.style.width = "100%";
-table.style.marginTop = "20px";
-table.style.borderCollapse = "separate";
-table.style.borderSpacing = "0";
-
+  const table = document.createElement("table");
+  table.style.width = "100%";
+  table.style.marginTop = "20px";
+  table.style.borderCollapse = "separate";
+  table.style.borderSpacing = "0";
 
   const headerRow = document.createElement("tr");
   const headers = ["Потребителско име", "E-mail", "Парола", "GenLink"];
@@ -129,145 +128,145 @@ table.style.borderSpacing = "0";
   });
   table.appendChild(headerRow);
 
- fetch(`${window.location.origin}/api/users`)
-  .then((response) => response.json())
-  .then((users) => {
-users.forEach((user) => {
-  const row = document.createElement("tr");
-  row.style.transition = "background 0.2s ease";
-  row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
+  fetch(`${window.location.origin}/api/users`)
+    .then((response) => response.json())
+    .then((users) => {
+      users.forEach((user) => {
+        const row = document.createElement("tr");
+        row.style.transition = "background 0.2s ease";
+        row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
 
-  if (user.Username.endsWith("_gsu.admin")) {
-    row.style.backgroundColor = "#ffecec";
-  }
-  if (!user.Username.endsWith("_gsu.admin")) {
-    
-row.addEventListener("mouseenter", () => {
-  const cells = row.querySelectorAll("td");
-  if (cells.length > 0) {
-    cells[0].style.borderTopLeftRadius = "10px";
-    cells[0].style.borderBottomLeftRadius = "10px";
-    cells[cells.length - 1].style.borderTopRightRadius = "10px";
-    cells[cells.length - 1].style.borderBottomRightRadius = "10px";
-    cells.forEach(cell => {
-      cell.style.backgroundColor = "#29ca8e";
-      cell.style.color = "#fff";
-    });
-  }
-});
+        if (user.Username.endsWith("_gsu.admin")) {
+          row.style.backgroundColor = "#ffecec";
+        } else {
+          row.addEventListener("mouseenter", () => {
+            const cells = row.querySelectorAll("td");
+            if (cells.length > 0) {
+              cells[0].style.borderTopLeftRadius = "10px";
+              cells[0].style.borderBottomLeftRadius = "10px";
+              cells[cells.length - 1].style.borderTopRightRadius = "10px";
+              cells[cells.length - 1].style.borderBottomRightRadius = "10px";
+              cells.forEach(cell => {
+                cell.style.backgroundColor = "#29ca8e";
+                cell.style.color = "#fff";
+              });
+            }
+          });
 
-row.addEventListener("mouseleave", () => {
-  const cells = row.querySelectorAll("td");
-  if (cells.length > 0) {
-    cells[0].style.borderTopLeftRadius = "0";
-    cells[0].style.borderBottomLeftRadius = "0";
-    cells[cells.length - 1].style.borderTopRightRadius = "0";
-    cells[cells.length - 1].style.borderBottomRightRadius = "0";
-    cells.forEach(cell => {
-      cell.style.backgroundColor = "transparent";
-      cell.style.color = "#333";
-    });
-  }
-});
-    row.addEventListener("click", () => {
-      showUserPopup(user);
-    });
-  }
+          row.addEventListener("mouseleave", () => {
+            const cells = row.querySelectorAll("td");
+            if (cells.length > 0) {
+              cells[0].style.borderTopLeftRadius = "0";
+              cells[0].style.borderBottomLeftRadius = "0";
+              cells[cells.length - 1].style.borderTopRightRadius = "0";
+              cells[cells.length - 1].style.borderBottomRightRadius = "0";
+              cells.forEach(cell => {
+                cell.style.backgroundColor = "transparent";
+                cell.style.color = "#333";
+              });
+            }
+          });
 
-  // Потребителско име – ВИНАГИ ВИДИМО
-  const usernameCell = document.createElement("td");
-  usernameCell.style.backgroundColor = "transparent";
-usernameCell.style.transition = "all 0.3s ease";
-  if (user.Username.endsWith("_gsu.admin")) {
-  const fullUsername = user.Username;
-  const maskedUsername = 
-    fullUsername.length > 5 
-    ? fullUsername.slice(0, 3) + '*****' + fullUsername.slice(-2) + '...'
-    : fullUsername;
-  usernameCell.textContent = maskedUsername;
-} else {
-  usernameCell.textContent = user.Username || "";
-}
+          row.addEventListener("click", () => {
+            showUserPopup(user);
+          });
+        }
 
-  usernameCell.style.padding = "10px";
-  usernameCell.style.textAlign = "left";
-  row.appendChild(usernameCell);
+        // Потребителско име
+        const usernameCell = document.createElement("td");
+        usernameCell.style.backgroundColor = "transparent";
+        usernameCell.style.transition = "all 0.3s ease";
+        usernameCell.style.padding = "10px";
+        usernameCell.style.textAlign = "left";
 
-  if (user.Username.endsWith("_gsu.admin")) {
-    const adminInfoCell = document.createElement("td");
-    adminInfoCell.textContent = "Админски профил";
-    adminInfoCell.colSpan = 3; // заема e-mail, парола, линкове
-    adminInfoCell.style.color = "#e74c3c";
-    adminInfoCell.style.fontSize = "14px";
-    adminInfoCell.style.fontWeight = "normal";
-    adminInfoCell.style.padding = "10px";
-    adminInfoCell.style.textAlign = "left";
-    row.appendChild(adminInfoCell);
-      const adminCells = row.querySelectorAll("td");
-  if (adminCells.length > 0) {
-    adminCells[0].style.borderTopLeftRadius = "10px";
-    adminCells[0].style.borderBottomLeftRadius = "10px";
-    adminCells[adminCells.length - 1].style.borderTopRightRadius = "10px";
-    adminCells[adminCells.length - 1].style.borderBottomRightRadius = "10px";
-  }
-}
-  } else {
-    // E-mail
-const emailCell = document.createElement("td");
-emailCell.style.backgroundColor = "transparent"; 
-emailCell.style.transition = "all 0.3s ease";   
-emailCell.textContent = user.Email || "";
-emailCell.style.padding = "10px";
-emailCell.style.textAlign = "left";
-row.appendChild(emailCell);
+        if (user.Username.endsWith("_gsu.admin")) {
+          const fullUsername = user.Username;
+          const maskedUsername = 
+            fullUsername.length > 5 
+              ? fullUsername.slice(0, 3) + '*****' + fullUsername.slice(-2) + '...'
+              : fullUsername;
+          usernameCell.textContent = maskedUsername;
+        } else {
+          usernameCell.textContent = user.Username || "";
+        }
+        row.appendChild(usernameCell);
 
-    // Парола
-const passwordCell = document.createElement("td");
-passwordCell.style.backgroundColor = "transparent"; 
-passwordCell.style.transition = "all 0.3s ease";     
-passwordCell.textContent = user.Password || "";
-passwordCell.style.padding = "10px";
-passwordCell.style.textAlign = "left";
-row.appendChild(passwordCell);
+        if (user.Username.endsWith("_gsu.admin")) {
+          const adminInfoCell = document.createElement("td");
+          adminInfoCell.textContent = "Админски профил";
+          adminInfoCell.colSpan = 3;
+          adminInfoCell.style.color = "#e74c3c";
+          adminInfoCell.style.fontSize = "14px";
+          adminInfoCell.style.fontWeight = "normal";
+          adminInfoCell.style.padding = "10px";
+          adminInfoCell.style.textAlign = "left";
+          row.appendChild(adminInfoCell);
 
-    // Линкове
-    const linkCell = document.createElement("td");
-    linkCell.style.backgroundColor = "transparent";  
-    linkCell.style.transition = "all 0.3s ease";      
-    linkCell.style.padding = "10px";
-    linkCell.style.lineHeight = "1.8";
-    linkCell.style.textAlign = "left";
+          const adminCells = row.querySelectorAll("td");
+          if (adminCells.length > 0) {
+            adminCells[0].style.borderTopLeftRadius = "10px";
+            adminCells[0].style.borderBottomLeftRadius = "10px";
+            adminCells[adminCells.length - 1].style.borderTopRightRadius = "10px";
+            adminCells[adminCells.length - 1].style.borderBottomRightRadius = "10px";
+          }
+        } else {
+          // E-mail
+          const emailCell = document.createElement("td");
+          emailCell.style.backgroundColor = "transparent";
+          emailCell.style.transition = "all 0.3s ease";
+          emailCell.textContent = user.Email || "";
+          emailCell.style.padding = "10px";
+          emailCell.style.textAlign = "left";
+          row.appendChild(emailCell);
 
-    const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
-    if (links.length > 0) {
-      links.forEach((link) => {
-        const linkElement = document.createElement("span");
-        linkElement.textContent = link;
-        linkElement.style.display = "block";
-        linkElement.style.color = "#333";
-        linkElement.style.marginBottom = "8px";
-        linkCell.appendChild(linkElement);
+          // Парола
+          const passwordCell = document.createElement("td");
+          passwordCell.style.backgroundColor = "transparent";
+          passwordCell.style.transition = "all 0.3s ease";
+          passwordCell.textContent = user.Password || "";
+          passwordCell.style.padding = "10px";
+          passwordCell.style.textAlign = "left";
+          row.appendChild(passwordCell);
+
+          // Линкове
+          const linkCell = document.createElement("td");
+          linkCell.style.backgroundColor = "transparent";
+          linkCell.style.transition = "all 0.3s ease";
+          linkCell.style.padding = "10px";
+          linkCell.style.lineHeight = "1.8";
+          linkCell.style.textAlign = "left";
+
+          const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
+          if (links.length > 0) {
+            links.forEach((link) => {
+              const linkElement = document.createElement("span");
+              linkElement.textContent = link;
+              linkElement.style.display = "block";
+              linkElement.style.color = "#333";
+              linkElement.style.marginBottom = "8px";
+              linkCell.appendChild(linkElement);
+            });
+          } else {
+            linkCell.textContent = "—";
+          }
+          row.appendChild(linkCell);
+        }
+
+        table.appendChild(row);
       });
-    } else {
-      linkCell.textContent = "—";
-    }
-    row.appendChild(linkCell);
-  } 
 
-  table.appendChild(row);
-}); 
+      container.appendChild(table);
+    })
+    .catch((err) => {
+      console.error("⚠️ Грешка при зареждане на потребителите:", err);
+      const error = document.createElement("p");
+      error.textContent = "⚠️ Грешка при зареждане на потребителите.";
+      error.style.color = "#e74c3c";
+      error.style.padding = "10px";
+      container.appendChild(error);
+    });
+}
 
-container.appendChild(table);
-}) 
-.catch((err) => {
-  console.error("⚠️ Грешка при зареждане на потребителите:", err);
-  const error = document.createElement("p");
-  error.textContent = "⚠️ Грешка при зареждане на потребителите.";
-  error.style.color = "#e74c3c";
-  error.style.padding = "10px";
-  container.appendChild(error);
-});
-} 
 
 
 function adminLogout() {
@@ -412,7 +411,7 @@ const linkInputs = links.length > 0
   function validatePopupPassword() {
     const value = popupPassword.value.trim();
     if (!value) return false;
-    const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value)
+   const valid = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]+$/.test(value)
             && /[A-Z]/.test(value)
             && /[0-9]/.test(value)
             && /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/';~]/.test(value)
