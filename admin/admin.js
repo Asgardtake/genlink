@@ -167,16 +167,24 @@ function loadUsers() {
 
         const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
         if (links.length > 0) {
-          links.forEach((link) => {
-            const linkElement = document.createElement("a");
-            linkElement.href = link;
-            linkElement.textContent = link;
-            linkElement.style.display = "block";
-            linkElement.style.color = "#333";
-            linkElement.style.textDecoration = "none";
-            linkElement.style.marginBottom = "8px";
-            linkCell.appendChild(linkElement);
-          });
+links.forEach((link) => {
+  const linkElement = document.createElement("a");
+  linkElement.href = link;
+  linkElement.textContent = link;
+  linkElement.style.display = "block";
+  linkElement.style.color = "#333";
+  linkElement.style.textDecoration = "none";
+  linkElement.style.marginBottom = "8px";
+
+  // СПИРАМЕ клик на линка да не отваря страницата:
+  linkElement.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  linkCell.appendChild(linkElement);
+});
+
         } else {
           linkCell.textContent = "—";
         }
