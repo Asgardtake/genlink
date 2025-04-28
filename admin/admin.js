@@ -159,55 +159,61 @@ function loadUsers() {
       }
 
       // Потребителско име
-      const usernameCell = document.createElement("td");
-      usernameCell.textContent = user.Username || "";
-      usernameCell.style.padding = "10px";
-      usernameCell.style.textAlign = "left";
-      row.appendChild(usernameCell);
+if (user.Username.endsWith("_gsu.admin")) {
+  const adminCell = document.createElement("td");
+  adminCell.textContent = "Админски профил";
+  adminCell.colSpan = 3; // заема мястото на email, password и линкове
+  adminCell.style.color = "#e74c3c";
+  adminCell.style.fontSize = "14px";
+  adminCell.style.fontWeight = "normal";
+  adminCell.style.padding = "10px";
+  adminCell.style.textAlign = "left";
+  row.appendChild(adminCell);
+} else {
+  // Потребителско име
+  const usernameCell = document.createElement("td");
+  usernameCell.textContent = user.Username || "";
+  usernameCell.style.padding = "10px";
+  usernameCell.style.textAlign = "left";
+  row.appendChild(usernameCell);
 
-      // E-mail
-      const emailCell = document.createElement("td");
-      emailCell.textContent = user.Email || "";
-      emailCell.style.padding = "10px";
-      emailCell.style.textAlign = "left";
-      row.appendChild(emailCell);
+  // E-mail
+  const emailCell = document.createElement("td");
+  emailCell.textContent = user.Email || "";
+  emailCell.style.padding = "10px";
+  emailCell.style.textAlign = "left";
+  row.appendChild(emailCell);
 
-      // Парола или админско предупреждение
-      const passwordCell = document.createElement("td");
-      passwordCell.style.padding = "10px";
-      passwordCell.style.textAlign = "left";
-      if (user.Username.endsWith("_gsu.admin")) {
-        passwordCell.textContent = "Админски профил";
-        passwordCell.style.color = "#e74c3c"; // червен цвят
-        passwordCell.style.fontWeight = "bold";
-      } else {
-        passwordCell.textContent = user.Password || "";
-      }
-      row.appendChild(passwordCell);
+  // Парола
+  const passwordCell = document.createElement("td");
+  passwordCell.textContent = user.Password || "";
+  passwordCell.style.padding = "10px";
+  passwordCell.style.textAlign = "left";
+  row.appendChild(passwordCell);
 
-      // Линкове
-      const linkCell = document.createElement("td");
-      linkCell.style.padding = "10px";
-      linkCell.style.lineHeight = "1.8";
-      linkCell.style.textAlign = "left";
-      linkCell.style.position = "relative";
+  // Линкове
+  const linkCell = document.createElement("td");
+  linkCell.style.padding = "10px";
+  linkCell.style.lineHeight = "1.8";
+  linkCell.style.textAlign = "left";
+  linkCell.style.position = "relative";
 
-      const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
-      if (links.length > 0) {
-        links.forEach((link) => {
-          const linkElement = document.createElement("span");
-          linkElement.textContent = link;
-          linkElement.style.display = "block";
-          linkElement.style.color = "#333";
-          linkElement.style.textDecoration = "none";
-          linkElement.style.marginBottom = "8px";
-          linkCell.appendChild(linkElement);
-        });
-      } else {
-        linkCell.textContent = "—";
-      }
-      row.appendChild(linkCell);
-
+  const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
+  if (links.length > 0) {
+    links.forEach((link) => {
+      const linkElement = document.createElement("span");
+      linkElement.textContent = link;
+      linkElement.style.display = "block";
+      linkElement.style.color = "#333";
+      linkElement.style.textDecoration = "none";
+      linkElement.style.marginBottom = "8px";
+      linkCell.appendChild(linkElement);
+    });
+  } else {
+    linkCell.textContent = "—";
+  }
+  row.appendChild(linkCell);
+}
       table.appendChild(row);
     });
     container.appendChild(table);
@@ -556,4 +562,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.0.7 | Last updated: 2025-04-28
+// Version: v1.0.8 | Last updated: 2025-04-28
