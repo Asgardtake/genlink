@@ -397,5 +397,3 @@ window.addEventListener("pageshow", (event) => {
 });
 
 // Version: v1.0.2 | Last updated: 2025-04-28
-const APP_VERSION = 'v1.0.2';
-console.log(`Genlink Admin Panel - Version: ${APP_VERSION}`);
