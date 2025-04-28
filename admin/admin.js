@@ -130,92 +130,98 @@ function loadUsers() {
  fetch(`${window.location.origin}/api/users`)
   .then((response) => response.json())
   .then((users) => {
-    users.forEach((user) => {
-      const row = document.createElement("tr");
-      row.style.transition = "background 0.2s ease";
-      row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
-      
-      // Промяна: Ако профилът е админски, фонът на реда става леко червен
-      if (user.Username.endsWith("_gsu.admin")) {
-        row.style.backgroundColor = "#ffecec";
-      }
+users.forEach((user) => {
+  const row = document.createElement("tr");
+  row.style.transition = "background 0.2s ease";
+  row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
 
-      // Ховър ефекти само за НЕадмин профили
-      if (!user.Username.endsWith("_gsu.admin")) {
-        row.addEventListener("mouseenter", () => {
-          row.style.backgroundColor = "#29ca8e";
-          row.querySelectorAll("td, span").forEach((el) => el.style.color = "#fff");
-        });
+  if (user.Username.endsWith("_gsu.admin")) {
+    row.style.backgroundColor = "#ffecec";
+  }
 
-        row.addEventListener("mouseleave", () => {
-          row.style.backgroundColor = "transparent";
-          row.querySelectorAll("td, span").forEach((el) => el.style.color = "#333");
-        });
+  if (!user.Username.endsWith("_gsu.admin")) {
+    row.addEventListener("mouseenter", () => {
+      row.style.backgroundColor = "#29ca8e";
+      row.querySelectorAll("td, span").forEach((el) => el.style.color = "#fff");
+    });
 
-        // Попъп само за НЕадмин профили
-        row.addEventListener("click", () => {
-          showUserPopup(user);
-        });
-      }
+    row.addEventListener("mouseleave", () => {
+      row.style.backgroundColor = "transparent";
+      row.querySelectorAll("td, span").forEach((el) => el.style.color = "#333");
+    });
 
-      // Потребителско име
-if (user.Username.endsWith("_gsu.admin")) {
-  const adminCell = document.createElement("td");
-  adminCell.textContent = "Админски профил";
-  adminCell.colSpan = 3; // заема мястото на email, password и линкове
-  adminCell.style.color = "#e74c3c";
-  adminCell.style.fontSize = "14px";
-  adminCell.style.fontWeight = "normal";
-  adminCell.style.padding = "10px";
-  adminCell.style.textAlign = "left";
-  row.appendChild(adminCell);
-} else {
-  // Потребителско име
+    row.addEventListener("click", () => {
+      showUserPopup(user);
+    });
+  }
+
+  // Потребителско име – ВИНАГИ ВИДИМО
   const usernameCell = document.createElement("td");
+  if (user.Username.endsWith("_gsu.admin")) {
+  const fullUsername = user.Username;
+  const maskedUsername = 
+    fullUsername.length > 5 
+    ? fullUsername.slice(0, 3) + '*****' + fullUsername.slice(-2) + '...'
+    : fullUsername;
+  usernameCell.textContent = maskedUsername;
+} else {
   usernameCell.textContent = user.Username || "";
+}
+
   usernameCell.style.padding = "10px";
   usernameCell.style.textAlign = "left";
   row.appendChild(usernameCell);
 
-  // E-mail
-  const emailCell = document.createElement("td");
-  emailCell.textContent = user.Email || "";
-  emailCell.style.padding = "10px";
-  emailCell.style.textAlign = "left";
-  row.appendChild(emailCell);
-
-  // Парола
-  const passwordCell = document.createElement("td");
-  passwordCell.textContent = user.Password || "";
-  passwordCell.style.padding = "10px";
-  passwordCell.style.textAlign = "left";
-  row.appendChild(passwordCell);
-
-  // Линкове
-  const linkCell = document.createElement("td");
-  linkCell.style.padding = "10px";
-  linkCell.style.lineHeight = "1.8";
-  linkCell.style.textAlign = "left";
-  linkCell.style.position = "relative";
-
-  const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
-  if (links.length > 0) {
-    links.forEach((link) => {
-      const linkElement = document.createElement("span");
-      linkElement.textContent = link;
-      linkElement.style.display = "block";
-      linkElement.style.color = "#333";
-      linkElement.style.textDecoration = "none";
-      linkElement.style.marginBottom = "8px";
-      linkCell.appendChild(linkElement);
-    });
+  if (user.Username.endsWith("_gsu.admin")) {
+    const adminInfoCell = document.createElement("td");
+    adminInfoCell.textContent = "Админски профил";
+    adminInfoCell.colSpan = 3; // заема e-mail, парола, линкове
+    adminInfoCell.style.color = "#e74c3c";
+    adminInfoCell.style.fontSize = "14px";
+    adminInfoCell.style.fontWeight = "normal";
+    adminInfoCell.style.padding = "10px";
+    adminInfoCell.style.textAlign = "left";
+    row.appendChild(adminInfoCell);
   } else {
-    linkCell.textContent = "—";
+    // E-mail
+    const emailCell = document.createElement("td");
+    emailCell.textContent = user.Email || "";
+    emailCell.style.padding = "10px";
+    emailCell.style.textAlign = "left";
+    row.appendChild(emailCell);
+
+    // Парола
+    const passwordCell = document.createElement("td");
+    passwordCell.textContent = user.Password || "";
+    passwordCell.style.padding = "10px";
+    passwordCell.style.textAlign = "left";
+    row.appendChild(passwordCell);
+
+    // Линкове
+    const linkCell = document.createElement("td");
+    linkCell.style.padding = "10px";
+    linkCell.style.lineHeight = "1.8";
+    linkCell.style.textAlign = "left";
+
+    const links = [user.Link1, user.Link2, user.Link3].filter(Boolean);
+    if (links.length > 0) {
+      links.forEach((link) => {
+        const linkElement = document.createElement("span");
+        linkElement.textContent = link;
+        linkElement.style.display = "block";
+        linkElement.style.color = "#333";
+        linkElement.style.marginBottom = "8px";
+        linkCell.appendChild(linkElement);
+      });
+    } else {
+      linkCell.textContent = "—";
+    }
+    row.appendChild(linkCell);
   }
-  row.appendChild(linkCell);
-}
-      table.appendChild(row);
-    });
+
+  table.appendChild(row);
+});
+
     container.appendChild(table);
   })
   .catch((err) => {
@@ -562,4 +568,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.0.8 | Last updated: 2025-04-28
+// Version: v1.0.9 | Last updated: 2025-04-28
