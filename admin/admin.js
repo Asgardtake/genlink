@@ -140,15 +140,31 @@ users.forEach((user) => {
   }
 
   if (!user.Username.endsWith("_gsu.admin")) {
-    row.addEventListener("mouseenter", () => {
-      row.style.backgroundColor = "#29ca8e";
-      row.querySelectorAll("td, span").forEach((el) => el.style.color = "#fff");
-    });
+row.addEventListener("mouseenter", () => {
+  const cells = row.querySelectorAll("td");
+  if (cells.length > 0) {
+    cells[0].style.borderTopLeftRadius = "10px";
+    cells[0].style.borderBottomLeftRadius = "10px";
+    cells[cells.length - 1].style.borderTopRightRadius = "10px";
+    cells[cells.length - 1].style.borderBottomRightRadius = "10px";
+  }
+  row.style.backgroundColor = "#29ca8e";
+  row.querySelectorAll("td, span").forEach((el) => el.style.color = "#fff");
+});
 
-    row.addEventListener("mouseleave", () => {
-      row.style.backgroundColor = "transparent";
-      row.querySelectorAll("td, span").forEach((el) => el.style.color = "#333");
-    });
+
+row.addEventListener("mouseleave", () => {
+  const cells = row.querySelectorAll("td");
+  if (cells.length > 0) {
+    cells[0].style.borderTopLeftRadius = "0";
+    cells[0].style.borderBottomLeftRadius = "0";
+    cells[cells.length - 1].style.borderTopRightRadius = "0";
+    cells[cells.length - 1].style.borderBottomRightRadius = "0";
+  }
+  row.style.backgroundColor = "transparent";
+  row.querySelectorAll("td, span").forEach((el) => el.style.color = "#333");
+});
+
 
     row.addEventListener("click", () => {
       showUserPopup(user);
