@@ -10,7 +10,7 @@ const session = require('express-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Настройка на CORS за достъп от frontend клиента с бисквитки (cookies)
+
 app.use(cors({
   origin: ['http://localhost:3000', 'https://genlink-production.up.railway.app'],
   credentials: true
