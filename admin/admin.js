@@ -105,11 +105,6 @@ if (sessionStorage.getItem("adminLoggedIn") !== "true" && greetingBlock) {
   }
 });
 
-
-
-
-
-
 function loadUsers() {
   const container = document.querySelector(".col-md-4.col-sm-4[style*='width:100%']");
   container.innerHTML = ""; // Изчистваме всичко
@@ -294,9 +289,6 @@ function loadUsers() {
       container.appendChild(error);
     });
 }
-
-
-
 
 function adminLogout() {
   sessionStorage.removeItem("adminLoggedIn");
@@ -631,5 +623,4 @@ function showAlertModal(message) {
   });
 }
 
-
-// Version: v1.1.2 | Last updated: 2025-04-28
+// Version: v1.1.3 | Last updated: 2025-04-29
