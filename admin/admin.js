@@ -624,4 +624,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.1.0 | Last updated: 2025-04-28
+// Version: v1.1.1 | Last updated: 2025-04-28
