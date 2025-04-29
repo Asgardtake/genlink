@@ -265,7 +265,13 @@ function loadUsers() {
           row.addEventListener("mouseleave", () => {
             adminCells.forEach((cell) => {
               cell.style.backgroundColor = "transparent";
-              cell.style.color = "initial";
+              cell.style.color = "#333"; 
+          
+              // Ако има вложени спанове (GenLink), връщаме и техния цвят
+              const spans = cell.querySelectorAll("span");
+              spans.forEach(span => {
+                span.style.color = "#333";
+              });
             });
           });
 
