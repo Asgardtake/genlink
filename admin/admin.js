@@ -142,6 +142,7 @@ function loadUsers() {
         row.style.transition = "background 0.2s ease";
         row.style.cursor = user.Username.endsWith("_gsu.admin") ? "default" : "pointer";
 
+        
         // Потребителско име
         const usernameCell = document.createElement("td");
         usernameCell.style.backgroundColor = "transparent";
@@ -194,6 +195,7 @@ function loadUsers() {
           emailCell.style.textAlign = "left";
           row.appendChild(emailCell);
 
+
           const passwordCell = document.createElement("td");
           passwordCell.style.backgroundColor = "transparent";
           passwordCell.style.transition = "all 0.3s ease";
@@ -201,6 +203,7 @@ function loadUsers() {
           passwordCell.style.padding = "10px";
           passwordCell.style.textAlign = "left";
           row.appendChild(passwordCell);
+
 
           const linkCell = document.createElement("td");
           linkCell.style.backgroundColor = "transparent";
@@ -249,8 +252,13 @@ function loadUsers() {
               adminCells[adminCells.length - 1].style.borderBottomRightRadius = "10px";
               adminCells.forEach((cell) => {
                 cell.style.backgroundColor = "#29ca8e";
-                cell.style.color = "#fff";
+                cell.style.color = "#fff";              
+                // Ако има вложени спанове (GenLink), оцвети и тях
+                const spans = cell.querySelectorAll("span");
+                spans.forEach(span => {
+                  span.style.color = "#fff";
               });
+            });
             }
           });
 
@@ -618,4 +626,4 @@ function showAlertModal(message) {
 }
 
 
-// Version: v1.1.1 | Last updated: 2025-04-28
+// Version: v1.1.2 | Last updated: 2025-04-28
