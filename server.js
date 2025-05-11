@@ -350,18 +350,22 @@ app.post('/api/update-profile', (req, res) => {
       return res.status(409).json({ success: false, message: 'Потребителско име или имейл вече съществуват.' });
     }
 
-    const updateQuery = 'UPDATE users SET Username = ?, Email = ? WHERE Username = ?';
-    db.query(updateQuery, [newUsername, newEmail, currentUsername], (err2) => {
-      if (err2) {
-        console.error('❌ Грешка при обновяване на профила:', err2);
-        return res.status(500).json({ success: false, message: 'Database error (update)' });
-      }
- console.log("🟡 UPDATE резултат:", result.affectedRows); // 👉 добави това тук
-      req.session.user.username = newUsername;
-      req.session.user.email = newEmail;
+const updateQuery = 'UPDATE users SET Username = ?, Email = ? WHERE Username = ?';
+db.query(updateQuery, [username, email, currentUsername], (err2, result) => {
+  if (err2) {
+    console.error("Грешка при запис:", err2);
+    return res.status(500).json({ success: false, message: 'Грешка при запис' });
+  }
 
-      res.json({ success: true });
-    });
+  console.log("🟡 UPDATE резултат:", result.affectedRows);
+
+  // Обновяваме и сесията
+  req.session.user.username = username;
+  req.session.user.email = email;
+
+  res.json({ success: true });
+});
+
   });
 });
 
