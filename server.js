@@ -337,3 +337,4 @@ app.get('/api/version', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
 });
+
