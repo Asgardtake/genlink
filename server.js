@@ -29,7 +29,7 @@ app.use(session({
   cookie: {
     httpOnly: true,                   // Cookie-то да не е достъпно от JavaScript
     sameSite: 'none',                 // За cross-origin session между Railway и клиента
-    secure: true                      // Cookie-то да се изпраща само по HTTPS    
+    secure: true                      // Cookie-то да се изпраща само по HTTPS
   }
 }));
 
@@ -54,29 +54,22 @@ console.log("Промяна за форсиране на билд");
 // Проверка дали има активна сесия (логнат потребител)
 app.get('/api/check-session', (req, res) => {
   if (req.session.user) {
-    res.json({
-      loggedIn: true,
-      user: req.session.user,
-      passwordChanged: req.session.passwordChanged || false
-    });
+    res.json({ loggedIn: true, user: req.session.user });
   } else {
     res.json({ loggedIn: false });
   }
 });
 
-
 // Изход от акаунт – изтриване на сесия и cookie
 app.post('/api/logout', (req, res) => {
-  req.session.passwordChanged = false; // 🧼 изчистваме флага
   req.session.destroy(err => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Грешка при изход' });
     }
-    res.clearCookie('connect.sid');
+    res.clearCookie('connect.sid'); // Изтриване на cookie-то
     res.json({ success: true, message: 'Излязохте успешно' });
   });
 });
-
 
 // Обслужване на admin.html при заявка към /admin
 app.get('/admin', (req, res) => {
@@ -132,8 +125,7 @@ app.post('/api/login', (req, res) => {
     req.session.user = {
       id: user.ID,
       username: user.Username,
-      email: user.Email,
-      password: user.Password
+      email: user.Email
     };
 
     res.json({
@@ -172,30 +164,6 @@ app.post('/api/register', (req, res) => {
   const query = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
   db.query(query, [username, password, email], (err, result) => {
     if (err) return res.status(500).json({ error: 'DB error' });
-    res.json({ success: true });
-  });
-});
-
-// ✅ Смяна на парола от логнат потребител
-app.post('/api/change-password', (req, res) => {
-  const { username, newPassword } = req.body;
-
-  if (!username || !newPassword) {
-    return res.status(400).json({ success: false, message: "Липсват данни" });
-  }
-
-  const updateQuery = 'UPDATE users SET Password = ? WHERE Username = ?';
-  db.query(updateQuery, [newPassword, username], (err, result) => {
-    if (err) {
-      console.error("❌ Грешка при обновяване на паролата:", err);
-      return res.status(500).json({ success: false, message: "Database error" });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "Потребителят не е намерен" });
-    }
-
-    req.session.passwordChanged = true; // 🔐 Добавяме флаг за смяна на парола
     res.json({ success: true });
   });
 });
@@ -324,54 +292,8 @@ app.put('/api/update-user', (req, res) => {
 });
 
 
-
-// 🔄 Обновяване на профилните данни на логнат потребител (username и email)
-app.post('/api/update-profile', (req, res) => {
-  if (!req.session.user || !req.session.user.username) {
-    return res.status(401).json({ success: false, message: 'Няма активна сесия' });
-  }
-
-  const currentUsername = req.session.user.username;
-  const { username: newUsername, email: newEmail } = req.body;
-  console.log("🔥 ПРОФИЛ ЗАПИС:", { currentUsername, newUsername, newEmail });
-
-  if (!newUsername || !newEmail) {
-    return res.status(400).json({ success: false, message: 'Липсват данни' });
-  }
-
-  const checkQuery = 'SELECT * FROM users WHERE (Username = ? OR Email = ?) AND Username != ?';
-  db.query(checkQuery, [newUsername, newEmail, currentUsername], (err, results) => {
-    if (err) {
-      console.error('❌ Грешка при проверка на новите данни:', err);
-      return res.status(500).json({ success: false, message: 'Database error (check)' });
-    }
-
-    if (results.length > 0) {
-      return res.status(409).json({ success: false, message: 'Потребителско име или имейл вече съществуват.' });
-    }
-
-const updateQuery = 'UPDATE users SET Username = ?, Email = ? WHERE Username = ?';
-db.query(updateQuery, [newUsername, newEmail, currentUsername], (err2, result) => {
-  if (err2) {
-    console.error("Грешка при запис:", err2);
-    return res.status(500).json({ success: false, message: 'Грешка при запис' });
-  }
-
-  console.log("⬅️ Сесия: ", req.session.user);
-  console.log("➡️ Нови стойности:", newUsername, newEmail);
-  console.log("🟡 UPDATE резултат:", result.affectedRows);
-
-  req.session.user.username = newUsername;
-  req.session.user.email = newEmail;
-
-  res.json({ success: true });
-});
-  });
-});
-
-
-
 console.log("rebuild")
+// Връщане на линковете (Link1, Link2, Link3) на логнат потребител
 app.get('/api/user-links', (req, res) => {
   if (!req.session.user || !req.session.user.username) {
     return res.status(401).json({ success: false, message: 'Няма активна сесия' });
