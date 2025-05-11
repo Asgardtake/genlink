@@ -28,14 +28,15 @@ app.use((req, res, next) => {
 // Настройка на сесии с express-session
 app.use(session({
   name: 'sid',
-  secret: 'yourSecretHere',
+  secret: 'yourSecretHere',     // сложна и уникална стойност в реален проект
   resave: false,
   saveUninitialized: false,
   cookie: {
-    httpOnly: true,
-    secure: true,              // 🔒 Задължително за HTTPS
-    sameSite: 'none',          // 🔄 Задължително за cross-origin
-    maxAge: 1000 * 60 * 60 * 2 // 2 часа валидност
+    httpOnly: true,             // ❗ не достъпно от JavaScript
+    secure: true,               // ❗ изисква HTTPS (налично в Railway)
+    sameSite: 'none',           // ❗ нуждата за cross-origin
+    maxAge: 1000 * 60 * 60 * 2, // ❗ 2 часа валидност
+    path: "/"                   // ❗ достъпно навсякъде в домейна
   }
 }));
 
@@ -344,4 +345,4 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
 });
 
-// Version: v1.0.5 | Last updated: 2025-05-11
+// Version: v1.0.6 | Last updated: 2025-05-11
