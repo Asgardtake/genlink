@@ -19,6 +19,11 @@ app.use(cors({
 app.use(express.json());               // Парсване на JSON заявки
 app.use(cookieParser());               // Парсване на cookies от клиента
 app.set('trust proxy', 1);             // Задължително за trust при proxy (Railway, HTTPS)
+app.use((req, res, next) => {
+  console.log('🔍 Protocol:', req.protocol);
+  console.log('🔍 x-forwarded-proto:', req.headers['x-forwarded-proto']);
+  next();
+});
 
 // Настройка на сесии с express-session
 app.use(session({
