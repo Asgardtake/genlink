@@ -373,7 +373,6 @@ db.query(updateQuery, [newUsername, newEmail, currentUsername], (err2, result) =
 
 
 console.log("rebuild")
-// Връщане на линковете (Link1, Link2, Link3) на логнат потребител
 app.get('/api/user-links', (req, res) => {
   if (!req.session.user || !req.session.user.username) {
     return res.status(401).json({ success: false, message: 'Няма активна сесия' });
