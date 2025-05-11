@@ -89,7 +89,10 @@ function openDeletePopup(onConfirm) {
 // Зарежда линковете на логнатия потребител и добавя бутони за изтриване и копиране
 async function loadGeneratedLinks() {
   try {
-    const response = await fetch('/api/user-links');
+    const response = await fetch('/api/user-links', {
+  method: 'GET',
+  credentials: 'include'
+});
     const data = await response.json();
 
     if (data.success && Array.isArray(data.links)) {
@@ -232,7 +235,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const usernameInput = document.getElementById("profileUsername");
       const emailInput = document.getElementById("profileEmail");
       const passwordInput = document.getElementById("profilePassword");
-
+[usernameInput, emailInput, passwordInput].forEach((input) => {
+  if (input) {
+    input.addEventListener("input", checkForChanges);
+    input.addEventListener("blur", checkForChanges);
+  }
+});
       if (usernameInput) usernameInput.value = user.username || "";
       if (emailInput) emailInput.value = user.email || "";
       if (passwordInput) passwordInput.value = user.password || "";
@@ -636,21 +644,17 @@ saveBtn.addEventListener("click", async () => {
         genltr: 'Link3'
       };
 
-      [usernameInput, emailInput, passwordInput].forEach((input) => {
-        input.addEventListener("input", checkForChanges);
-        input.addEventListener("blur", checkForChanges);
-      });
-
       // Проверява дали има промени и дали всички полета са валидни,
       // за да се покаже активен бутон "Запази"      
       function checkForChanges() {
         const currentUsername = usernameInput.value.trim();
         const currentEmail = emailInput.value.trim();
-        const currentPassword = passwordInput.value.trim();
+        const currentPassword = passwordInput ? passwordInput.value.trim() : "";
 
         const usernameError = validateUsername(currentUsername);
         const emailError = validateEmail(currentEmail);
-        const passwordError = validatePassword(currentPassword);
+        const passwordError = passwordInput ? validatePassword(currentPassword) : "";
+
 
         if (usernameError) showError(usernameInput, usernameError);
         else removeError(usernameInput);
@@ -658,8 +662,11 @@ saveBtn.addEventListener("click", async () => {
         if (emailError) showError(emailInput, emailError);
         else removeError(emailInput);
 
-        if (passwordError) showError(passwordInput, passwordError);
-        else removeError(passwordInput);
+if (passwordInput) {
+  if (passwordError) showError(passwordInput, passwordError);
+  else removeError(passwordInput);
+}
+
 
         const allMatchOriginal =
           currentUsername === (originalData.username || "") &&
