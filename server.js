@@ -133,6 +133,7 @@ app.post('/api/login', (req, res) => {
       id: user.ID,
       username: user.Username,
       email: user.Email
+      password: user.Password
     };
 
     res.json({
@@ -321,6 +322,48 @@ app.put('/api/update-user', (req, res) => {
     });
   });
 });
+
+
+
+// 🔄 Обновяване на профилните данни на логнат потребител (username и email)
+app.post('/api/update-profile', (req, res) => {
+  if (!req.session.user || !req.session.user.username) {
+    return res.status(401).json({ success: false, message: 'Няма активна сесия' });
+  }
+
+  const currentUsername = req.session.user.username;
+  const { username: newUsername, email: newEmail } = req.body;
+
+  if (!newUsername || !newEmail) {
+    return res.status(400).json({ success: false, message: 'Липсват данни' });
+  }
+
+  const checkQuery = 'SELECT * FROM users WHERE (Username = ? OR Email = ?) AND Username != ?';
+  db.query(checkQuery, [newUsername, newEmail, currentUsername], (err, results) => {
+    if (err) {
+      console.error('❌ Грешка при проверка на новите данни:', err);
+      return res.status(500).json({ success: false, message: 'Database error (check)' });
+    }
+
+    if (results.length > 0) {
+      return res.status(409).json({ success: false, message: 'Потребителско име или имейл вече съществуват.' });
+    }
+
+    const updateQuery = 'UPDATE users SET Username = ?, Email = ? WHERE Username = ?';
+    db.query(updateQuery, [newUsername, newEmail, currentUsername], (err2) => {
+      if (err2) {
+        console.error('❌ Грешка при обновяване на профила:', err2);
+        return res.status(500).json({ success: false, message: 'Database error (update)' });
+      }
+
+      req.session.user.username = newUsername;
+      req.session.user.email = newEmail;
+
+      res.json({ success: true });
+    });
+  });
+});
+
 
 
 console.log("rebuild")
