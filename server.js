@@ -132,7 +132,7 @@ app.post('/api/login', (req, res) => {
     req.session.user = {
       id: user.ID,
       username: user.Username,
-      email: user.Email
+      email: user.Email,
       password: user.Password
     };
 
