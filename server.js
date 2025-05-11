@@ -333,6 +333,7 @@ app.post('/api/update-profile', (req, res) => {
 
   const currentUsername = req.session.user.username;
   const { username: newUsername, email: newEmail } = req.body;
+  console.log("🔥 ПРОФИЛ ЗАПИС:", { currentUsername, newUsername, newEmail });
 
   if (!newUsername || !newEmail) {
     return res.status(400).json({ success: false, message: 'Липсват данни' });
@@ -355,7 +356,7 @@ app.post('/api/update-profile', (req, res) => {
         console.error('❌ Грешка при обновяване на профила:', err2);
         return res.status(500).json({ success: false, message: 'Database error (update)' });
       }
-
+ console.log("🟡 UPDATE резултат:", result.affectedRows); // 👉 добави това тук
       req.session.user.username = newUsername;
       req.session.user.email = newEmail;
 
