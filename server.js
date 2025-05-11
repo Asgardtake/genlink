@@ -27,14 +27,15 @@ app.use((req, res, next) => {
 
 // Настройка на сесии с express-session
 app.use(session({
-  secret: 'genlink_session_secret',    // Тайна за подписване на сесиите
-  resave: false,                       // Не презаписвай сесията, ако няма промени
-  saveUninitialized: false,           // Не създавай празни сесии
-  proxy: true,                         // Използва се зад proxy (Railway)
+  name: 'sid',
+  secret: 'yourSecretHere',
+  resave: false,
+  saveUninitialized: false,
   cookie: {
-    httpOnly: true,                   // Cookie-то да не е достъпно от JavaScript
-    sameSite: 'none',                 // За cross-origin session между Railway и клиента
-    secure: true                      // Cookie-то да се изпраща само по HTTPS
+    httpOnly: true,
+    secure: true,              // 🔒 Задължително за HTTPS
+    sameSite: 'none',          // 🔄 Задължително за cross-origin
+    maxAge: 1000 * 60 * 60 * 2 // 2 часа валидност
   }
 }));
 
@@ -343,4 +344,4 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
 });
 
-// Version: v1.0.4 | Last updated: 2025-05-11
+// Version: v1.0.5 | Last updated: 2025-05-11
