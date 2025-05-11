@@ -351,21 +351,21 @@ app.post('/api/update-profile', (req, res) => {
     }
 
 const updateQuery = 'UPDATE users SET Username = ?, Email = ? WHERE LOWER(Username) = LOWER(?)';
-db.query(updateQuery, [username, email, currentUsername], (err2, result) => {
+db.query(updateQuery, [newUsername, newEmail, currentUsername], (err2, result) => {
   if (err2) {
     console.error("Грешка при запис:", err2);
     return res.status(500).json({ success: false, message: 'Грешка при запис' });
   }
 
+  console.log("⬅️ Сесия: ", req.session.user);
+  console.log("➡️ Нови стойности:", newUsername, newEmail);
   console.log("🟡 UPDATE резултат:", result.affectedRows);
 
-  // Обновяваме и сесията
-  req.session.user.username = username;
-  req.session.user.email = email;
+  req.session.user.username = newUsername;
+  req.session.user.email = newEmail;
 
   res.json({ success: true });
 });
-
   });
 });
 
