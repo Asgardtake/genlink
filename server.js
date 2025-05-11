@@ -54,22 +54,29 @@ console.log("Промяна за форсиране на билд");
 // Проверка дали има активна сесия (логнат потребител)
 app.get('/api/check-session', (req, res) => {
   if (req.session.user) {
-    res.json({ loggedIn: true, user: req.session.user });
+    res.json({
+      loggedIn: true,
+      user: req.session.user,
+      passwordChanged: req.session.passwordChanged || false
+    });
   } else {
     res.json({ loggedIn: false });
   }
 });
 
+
 // Изход от акаунт – изтриване на сесия и cookie
 app.post('/api/logout', (req, res) => {
+  req.session.passwordChanged = false; // 🧼 изчистваме флага
   req.session.destroy(err => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Грешка при изход' });
     }
-    res.clearCookie('connect.sid'); // Изтриване на cookie-то
+    res.clearCookie('connect.sid');
     res.json({ success: true, message: 'Излязохте успешно' });
   });
 });
+
 
 // Обслужване на admin.html при заявка към /admin
 app.get('/admin', (req, res) => {
@@ -164,6 +171,30 @@ app.post('/api/register', (req, res) => {
   const query = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
   db.query(query, [username, password, email], (err, result) => {
     if (err) return res.status(500).json({ error: 'DB error' });
+    res.json({ success: true });
+  });
+});
+
+// ✅ Смяна на парола от логнат потребител
+app.post('/api/change-password', (req, res) => {
+  const { username, newPassword } = req.body;
+
+  if (!username || !newPassword) {
+    return res.status(400).json({ success: false, message: "Липсват данни" });
+  }
+
+  const updateQuery = 'UPDATE users SET Password = ? WHERE Username = ?';
+  db.query(updateQuery, [newPassword, username], (err, result) => {
+    if (err) {
+      console.error("❌ Грешка при обновяване на паролата:", err);
+      return res.status(500).json({ success: false, message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Потребителят не е намерен" });
+    }
+
+    req.session.passwordChanged = true; // 🔐 Добавяме флаг за смяна на парола
     res.json({ success: true });
   });
 });
