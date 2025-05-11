@@ -350,7 +350,7 @@ app.post('/api/update-profile', (req, res) => {
       return res.status(409).json({ success: false, message: 'Потребителско име или имейл вече съществуват.' });
     }
 
-const updateQuery = 'UPDATE users SET Username = ?, Email = ? WHERE Username = ?';
+const updateQuery = 'UPDATE users SET Username = ?, Email = ? WHERE LOWER(Username) = LOWER(?)';
 db.query(updateQuery, [username, email, currentUsername], (err2, result) => {
   if (err2) {
     console.error("Грешка при запис:", err2);
