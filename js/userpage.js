@@ -452,9 +452,6 @@ const saveBtn = document.getElementById("saveBtn");
 let originalUsername = user.username;
 let originalEmail = user.email;
 
-
-const emailInput = document.getElementById("profileEmail");
-
 function showProfileError(input, message) {
   clearProfileError(input);
   const error = document.createElement("div");
