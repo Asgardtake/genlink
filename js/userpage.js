@@ -86,6 +86,50 @@ function openDeletePopup(onConfirm) {
   document.body.appendChild(overlay);
 }
 
+
+
+// === ГЛОБАЛЕН CLICK ЗА БУТОНА "ЗАПАЗИ" ===
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("a.pricing-btn");
+  if (!btn || btn.dataset.enabled !== "true") return;
+  e.preventDefault();
+
+  const updatedUsername = usernameInput.value.trim();
+  const updatedEmail = emailInput.value.trim();
+
+  try {
+    const res = await fetch("/api/update-profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ username: updatedUsername, email: updatedEmail })
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      let changes = [];
+      if (updatedUsername !== originalUsername) changes.push("потребителското име");
+      if (updatedEmail !== originalEmail) changes.push("имейла");
+
+      originalUsername = updatedUsername;
+      originalEmail = updatedEmail;
+
+      showSuccessPopup(changes);
+      checkProfileValidity();
+    } else {
+      alert(result.message || "Грешка при запис.");
+    }
+
+  } catch (err) {
+    console.error("Грешка при запис:", err);
+    alert("Сървърна грешка при запис.");
+  }
+});
+
+
+
 // Зарежда линковете на логнатия потребител и добавя бутони за изтриване и копиране
 async function loadGeneratedLinks() {
   try {
@@ -563,69 +607,11 @@ saveBtn.addEventListener("click", async () => {
       originalUsername = updatedUsername;
       originalEmail = updatedEmail;
 
-      const overlay = document.createElement("div");
-      overlay.style.position = "fixed";
-      overlay.style.top = "0";
-      overlay.style.left = "0";
-      overlay.style.width = "100vw";
-      overlay.style.height = "100vh";
-      overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-      overlay.style.display = "flex";
-      overlay.style.alignItems = "center";
-      overlay.style.justifyContent = "center";
-      overlay.style.zIndex = "9999";
-
-      const modal = document.createElement("div");
-      modal.style.background = "#fff";
-      modal.style.borderRadius = "10px";
-      modal.style.boxShadow = "0 0 20px rgba(0,0,0,0.3)";
-      modal.style.width = "90%";
-      modal.style.maxWidth = "400px";
-      modal.style.padding = "24px";
-      modal.style.position = "relative";
-      modal.style.zIndex = "10000";
-      modal.style.textAlign = "center";
-
-      const closeBtn = document.createElement("span");
-      closeBtn.innerHTML = "&times;";
-      closeBtn.style.position = "absolute";
-      closeBtn.style.top = "10px";
-      closeBtn.style.right = "14px";
-      closeBtn.style.cursor = "pointer";
-      closeBtn.style.fontSize = "22px";
-      closeBtn.style.color = "#999";
-      closeBtn.style.fontWeight = "bold";
-      closeBtn.onclick = () => overlay.remove();
-
-      const msg = document.createElement("p");
-      msg.style.margin = "0 0 20px";
-      msg.style.fontSize = "15px";
-      msg.style.color = "#333";
-      msg.textContent =
-        changes.length === 2
-          ? "Успешно са променени: потребителското име и имейлът."
-          : changes[0] === "имейла"
-            ? "Успешно променен мейл."
-            : "Успешно променено потребителско име.";
-
-      const okBtn = document.createElement("button");
-      okBtn.textContent = "Затвори";
-      okBtn.style.padding = "10px 20px";
-      okBtn.style.backgroundColor = "#29ca8e";
-      okBtn.style.color = "#fff";
-      okBtn.style.border = "none";
-      okBtn.style.borderRadius = "6px";
-      okBtn.style.cursor = "pointer";
-      okBtn.style.fontWeight = "bold";
-      okBtn.onclick = () => overlay.remove();
-
-      modal.appendChild(closeBtn);
-      modal.appendChild(msg);
-      modal.appendChild(okBtn);
-      overlay.appendChild(modal);
-      document.body.appendChild(overlay);
+      showSuccessPopup(changes); // 🔄 Показваме готовия попъп
 
       checkProfileValidity();
+    } else {
+      alert(result.message || "Грешка при запис.");
     }
 
   } catch (err) {
@@ -633,6 +619,7 @@ saveBtn.addEventListener("click", async () => {
     alert("Сървърна грешка при запис.");
   }
 });
+
 
 
       loadGeneratedLinks();
@@ -782,5 +769,68 @@ window.addEventListener("pageshow", (event) => {
       });
   }
 });
+function showSuccessPopup(changes) {
+  const overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100vw";
+  overlay.style.height = "100vh";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  overlay.style.display = "flex";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+  overlay.style.zIndex = "9999";
 
-// Version: v1.0.3 | Last updated: 2025-04-28
+  const modal = document.createElement("div");
+  modal.style.background = "#fff";
+  modal.style.borderRadius = "10px";
+  modal.style.boxShadow = "0 0 20px rgba(0,0,0,0.3)";
+  modal.style.width = "90%";
+  modal.style.maxWidth = "400px";
+  modal.style.padding = "24px";
+  modal.style.position = "relative";
+  modal.style.zIndex = "10000";
+  modal.style.textAlign = "center";
+
+  const closeBtn = document.createElement("span");
+  closeBtn.innerHTML = "&times;";
+  closeBtn.style.position = "absolute";
+  closeBtn.style.top = "10px";
+  closeBtn.style.right = "14px";
+  closeBtn.style.cursor = "pointer";
+  closeBtn.style.fontSize = "22px";
+  closeBtn.style.color = "#999";
+  closeBtn.style.fontWeight = "bold";
+  closeBtn.onclick = () => overlay.remove();
+
+  const msg = document.createElement("p");
+  msg.style.margin = "0 0 20px";
+  msg.style.fontSize = "15px";
+  msg.style.color = "#333";
+  msg.textContent =
+    changes.length === 2
+      ? "Успешно са променени: потребителското име и имейлът."
+      : changes[0] === "имейла"
+        ? "Успешно променен мейл."
+        : "Успешно променено потребителско име.";
+
+  const okBtn = document.createElement("button");
+  okBtn.textContent = "Затвори";
+  okBtn.style.padding = "10px 20px";
+  okBtn.style.backgroundColor = "#29ca8e";
+  okBtn.style.color = "#fff";
+  okBtn.style.border = "none";
+  okBtn.style.borderRadius = "6px";
+  okBtn.style.cursor = "pointer";
+  okBtn.style.fontWeight = "bold";
+  okBtn.onclick = () => overlay.remove();
+
+  modal.appendChild(closeBtn);
+  modal.appendChild(msg);
+  modal.appendChild(okBtn);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+}
+
+// Version: v1.0.4 | Last updated: 2025-05-11
