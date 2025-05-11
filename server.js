@@ -338,3 +338,4 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Сървърът работи на http://0.0.0.0:${PORT}`);
 });
 
+// Version: v1.0.4 | Last updated: 2025-05-11
