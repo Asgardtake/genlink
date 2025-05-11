@@ -330,9 +330,12 @@ document.getElementById("loginModalOverlay")?.addEventListener("click", (e) => {
 // Глобални shortcut функции за отваряне и затваряне
 window.closeLoginModal = () => closeModal("loginModal", "loginModalOverlay");
 window.closeRegisterModal = () => closeModal("registerModal", "registerModalOverlay");
-async function checkUsernameInDB(username) {
+
+  async function checkUsernameInDB(username) {
   try {
-    const res = await fetch(`/api/check-username/${encodeURIComponent(username)}`);
+    const res = await fetch(`/api/check-username/${encodeURIComponent(username)}`, {
+      credentials: "include"
+    });
     const data = await res.json();
     return data.exists;
   } catch (error) {
@@ -341,9 +344,12 @@ async function checkUsernameInDB(username) {
   }
 }
 
+
 async function checkEmailInDB(email) {
   try {
-    const res = await fetch(`/api/check-email/${encodeURIComponent(email)}`);
+    const res = await fetch(`/api/check-email/${encodeURIComponent(email)}`, {
+      credentials: "include"
+    });
     const data = await res.json();
     return data.exists;
   } catch (error) {
@@ -351,6 +357,7 @@ async function checkEmailInDB(email) {
     return false;
   }
 }
+
 // ------------------------------
 // REGISTER POPUP
 // ------------------------------
@@ -748,13 +755,14 @@ regForm.addEventListener("submit", async function (e) {
 
   try {
     // Изпращаме заявката към API-то
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username, password, email })
-    });
+const response = await fetch('/api/register', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ username, password, email }),
+  credentials: "include"
+});
 
     const data = await response.json();
 
@@ -1441,4 +1449,4 @@ fetch('/api/check-session', {
   .catch(err => console.error("Грешка при check-session:", err));
 });
 
-// Version: v1.0.2 | Last updated: 2025-04-28
+// Version: v1.0.3 | Last updated: 2025-05-11
