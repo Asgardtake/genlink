@@ -29,7 +29,8 @@ app.use(session({
   cookie: {
     httpOnly: true,                   // Cookie-то да не е достъпно от JavaScript
     sameSite: 'none',                 // За cross-origin session между Railway и клиента
-    secure: true                      // Cookie-то да се изпраща само по HTTPS
+    secure: true,                      // Cookie-то да се изпраща само по HTTPS
+    domain: 'genlink-production.up.railway.app'
   }
 }));
 
