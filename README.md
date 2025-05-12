@@ -116,5 +116,4 @@ node server.js
 ## 📬 Контакти
 За въпроси или предложения:  
 ✉️ [Виктор Михайлов: vm317404@gmail.com
-    Свилен Денев: svilen.denev@pgi-varna.com
-    asgardtake@gmail.com]
+    Свилен Денев: svilen.denev@pgi-varna.com]
